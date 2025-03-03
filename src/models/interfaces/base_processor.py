@@ -6,6 +6,8 @@ from logging.handlers import QueueHandler, QueueListener
 from pathlib import Path
 from typing import List, Tuple, Iterable
 from .interfaces import IWatermarkProcessor, IWatermarkConfig
+import time
+from collections import defaultdict
 
 # 移除全局listener变量，改为类封装
 class LogSystem:
@@ -41,6 +43,16 @@ class LogSystem:
         self.listener.stop()
         self.manager.shutdown()
 
+def timing_decorator(func):
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        duration = time.perf_counter() - start
+        return (duration, result)
+    return wrapper
+
+def _default_stats():
+    return {'count':0, 'total':0.0}
 
 class BaseWatermarkProcessor(IWatermarkProcessor):
     """优化后的水印处理基类"""
@@ -49,6 +61,22 @@ class BaseWatermarkProcessor(IWatermarkProcessor):
 
     def __init__(self, config: IWatermarkConfig):
         self._config = config
+        self._timings = defaultdict(float)
+        self._task_stats = defaultdict(_default_stats)
+
+    def _print_stats(self):
+        """打印详细的耗时统计"""
+        print("\n======== 性能分析报告 ========")
+        print(f"[进程池初始化] {self._timings['pool_init']:.2f}s")
+        print(f"[任务分发] {self._timings['task_distribute']:.2f}s")
+        print(f"[结果收集] {self._timings['result_collect']:.2f}s")
+        print(f"[资源回收] {self._timings['shutdown']:.2f}s")
+        print(f"[总耗时] {self._timings['total']:.2f}s\n")
+
+        print("=== 任务处理统计 ===")
+        for task_type, stat in self._task_stats.items():
+            avg = stat['total'] / stat['count'] if stat['count'] else 0
+            print(f"{task_type}: 平均{avg:.2f}s | 总数{stat['total']:.2f}s | 次数{stat['count']}")
 
     def process_batch(self, input_dir: Path, output_dir: Path) -> List[Path]:
         log_system = LogSystem()
@@ -64,24 +92,41 @@ class BaseWatermarkProcessor(IWatermarkProcessor):
         # 动态调整进程数
         pool_size = min(os.cpu_count() or 4, len(tasks))
         try:
+            total_start = time.perf_counter()
+
+            # 进程池初始化计时
+            pool_init_start = time.perf_counter()
             with mp.Pool(
                     processes=pool_size,
                     initializer=self._init_worker,
                     initargs=(log_system.log_queue,)
             ) as pool:
+                self._timings['pool_init'] = time.perf_counter() - pool_init_start
+                # 任务分发计时
+                task_start = time.perf_counter()
                 results = pool.imap_unordered(
                     self._process_wrapper,
                     tasks,
                     chunksize=10  # 优化内存使用
                 )
+                self._timings['task_distribute'] = time.perf_counter() - task_start
+                # 结果收集计时
+                collect_start = time.perf_counter()
                 result = [
                     output_path
                     for success, output_path in results
                     if success
                 ]
+                self._timings['result_collect'] = time.perf_counter() - collect_start
+                return result
         finally:
+            # 资源回收计时
+            shutdown_start = time.perf_counter()
             log_system.shutdown()
-            return result
+            self._timings['shutdown'] = time.perf_counter() - shutdown_start
+            # 总耗时计算
+            self._timings['total'] = time.perf_counter() - total_start
+            self._print_stats()
 
 
 
