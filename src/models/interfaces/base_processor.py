@@ -117,7 +117,7 @@ class BaseWatermarkProcessor(IWatermarkProcessor):
     def _process_wrapper(self, task: Tuple[Path, Path]) -> Tuple[bool, Path]:
         """异常处理包装器"""
         try:
-            self.process_single(task, task)
+            self.process_single(task[0], task[1])
             return (True, task)
         except Exception as e:
             self.logger.error(f"处理失败: {task} - {str(e)}", exc_info=True)
@@ -130,6 +130,10 @@ class BaseWatermarkProcessor(IWatermarkProcessor):
             self._logger.addHandler(QueueHandler(self._log_queue))
             self._logger.setLevel(logging.INFO)
         return self._logger
+
+    @property
+    def config(self):
+        return self._config
 
     def __del__(self):
         """安全关闭日志监听"""

@@ -46,3 +46,8 @@ class IWatermarkConfig(ABC):
     @abstractmethod
     def opacity(self) -> float:
         """水印透明度"""
+
+    # @property
+    # @abstractmethod
+    # def npy_path(self) -> str:
+    #     """水印透明度"""
