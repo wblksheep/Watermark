@@ -9,6 +9,34 @@ import logging
 from logging.handlers import QueueHandler, QueueListener
 import multiprocessing as mp
 from multiprocessing import Pool, cpu_count
+# 移除全局listener变量，改为类封装
+class LogSystem:
+    _instance = None
+
+    def __new__(cls):
+        if not cls._instance:
+            cls._instance = super().__new__(cls)
+            cls.manager = mp.Manager()
+            cls.log_queue = cls.manager.Queue()
+            cls.listener = QueueListener(
+                cls.log_queue,
+                logging.FileHandler("watermark.log"),
+                logging.StreamHandler()
+            )
+            cls.listener.start()
+        return cls._instance
+
+    def __del__(self):
+        if mp.current_process().name == 'MainProcess':
+            if hasattr(self, 'listener'):
+                try:
+                    self.listener.stop()
+                except Exception:  # 防止二次错误
+                    pass
+    def shutdown(self):
+        """显式关闭方法"""
+        self.listener.stop()
+        self.manager.shutdown()
 # 读取图片文件
 def load_image(image_path):
     if not os.path.exists(image_path):
@@ -76,9 +104,11 @@ def process_single_image(input_path, output_path, config, npy_data, quality=30):
 
 
 
+# 修改日志队列创建方式
 def configure_main_logger():
-    """主进程日志配置（添加队列监听器）"""
-    log_queue = mp.Queue()  # 多进程安全队列
+    """使用Manager创建跨进程安全队列"""
+    manager = mp.Manager()
+    log_queue = manager.Queue()
 
     # 主日志处理器（文件和控制台）
     file_handler = logging.FileHandler("watermark.log")
@@ -88,7 +118,6 @@ def configure_main_logger():
     stream_handler.setFormatter(formatter)
 
     # 队列监听器（主进程专用）
-    global listener
     listener = QueueListener(log_queue, file_handler, stream_handler)
     listener.start()
 
@@ -109,8 +138,8 @@ def worker_init(log_queue):
     logger.addHandler(queue_handler)
 
 def generate_watermark(input_folder, watermark_type, opacity, quality):
-    # 初始化日志队列和监听器
-    log_queue = configure_main_logger()
+    # 初始化日志系统
+    log_system = LogSystem()
 
     """批量生成水印"""
     # 加载配置
@@ -136,7 +165,7 @@ def generate_watermark(input_folder, watermark_type, opacity, quality):
     with mp.Pool(
         processes=mp.cpu_count(),
         initializer=worker_init,
-        initargs=(log_queue,)
+        initargs=(log_system.log_queue,)
     ) as pool:
         tasks = [(input_path, os.path.join(output_folder, os.path.basename(input_path)),
                 config, npy_data, quality)
