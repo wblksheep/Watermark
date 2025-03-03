@@ -1,0 +1,126 @@
+Index: ui/main_window.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from typing import Any, Dict\r\n\r\nfrom PySide6.QtWidgets import (\r\n    QMainWindow, QMenuBar, QMenu, QPushButton, QComboBox,\r\n    QVBoxLayout, QWidget, QLabel, QLineEdit, QFileDialog, QMessageBox\r\n)\r\nfrom PySide6.QtGui import QAction, QWindow\r\nfrom PySide6.QtCore import Qt, Signal\r\nfrom config import ConfigLoader\r\nimport logging\r\nlogger = logging.getLogger(__name__)\r\n\r\nfrom ui.interfaces import IMainWindow\r\n\r\nclass MainWindow(IMainWindow):\r\n    # 定义信号（用于向Presenter传递事件）\r\n    folder_selected = Signal()\r\n    opacity_changed = Signal(int)\r\n    generate_triggered = Signal(int)\r\n    menu_clicked = Signal(str)\r\n    toggle_topmost = Signal(bool)\r\n\r\n    def __init__(self):\r\n        super().__init__()\r\n        self.setWindowTitle(\"界面示例\")\r\n        self.setGeometry(100, 100, 400, 300)\r\n        self.presenter: Any = None\r\n        self.config: Dict[str, Any] = ConfigLoader.load_watermark_config()\r\n        self._init_ui()\r\n\r\n    def show_error(self, message):\r\n        QMessageBox.critical(self, \"错误\", message)\r\n\r\n    def show_folder_dialog(self, default_path):\r\n        return QFileDialog.getExistingDirectory(self, \"选择文件夹\", default_path)\r\n\r\n    def set_folder_path(self, path):\r\n        self.folder_input.setText(path)\r\n\r\n    def get_folder_path(self):\r\n        return self.folder_input.text()\r\n\r\n    def get_opacity_input(self):\r\n        return self.opacity_input.text()\r\n    def initAfterInjection(self):\r\n        self.toggle_topmost.emit(True)\r\n\r\n    def set_window_topmost(self, is_topmost):\r\n        flags = self.windowFlags()\r\n        if is_topmost:\r\n            flags |= Qt.WindowStaysOnTopHint\r\n        else:\r\n            flags &= ~Qt.WindowStaysOnTopHint\r\n        self.setWindowFlags(flags)\r\n\r\n    def set_presenter(self, presenter):\r\n        self.presenter = presenter\r\n\r\n    def _init_ui(self):\r\n\r\n        self._create_menu_bar()\r\n        self._create_main_content()\r\n\r\n    def _create_param_inputs(self, params):\r\n        # 创建容器并附加独立的输入字段字典\r\n        container = QWidget()\r\n        container.input_fields = {}  # 每个容器维护自己的输入框\r\n        layout = QVBoxLayout()\r\n        for param, value in params.items():\r\n            label = QLabel(param)\r\n            input = QLineEdit(str(value))\r\n            container.input_fields[param] = input\r\n            layout.addWidget(label)\r\n            layout.addWidget(input)\r\n\r\n        container.setLayout(layout)\r\n        return container\r\n\r\n    def get_watermark_params(self, wm_type):\r\n        return {\r\n            param: self.params_inputs[wm_type].input_fields[param].text()\r\n            for param in self.config[wm_type]['params']\r\n        }\r\n\r\n    def _bind_handlers(self):\r\n        # 动态绑定配置中的处理器\r\n        for wm_type in self.model.config:\r\n            handler = self._create_handler(wm_type)\r\n            setattr(self, f\"handle_{wm_type}\", handler)\r\n\r\n    def _create_menu_bar(self):\r\n        menu_bar = self.menuBar()\r\n\r\n        # 文件菜单\r\n        file_action = QAction(\"文件\", self)\r\n        file_action.triggered.connect(lambda: self.menu_clicked.emit(\"文件\"))\r\n        menu_bar.addAction(file_action)\r\n\r\n        # 窗口置顶\r\n        self.always_on_top_action = QAction(\"取消始终置顶\", self)\r\n        self.always_on_top_action.setCheckable(True)\r\n        self.always_on_top_action.setChecked(True)\r\n        self.always_on_top_action.triggered.connect(\r\n            lambda checked: self.toggle_topmost.emit(checked)\r\n        )\r\n        menu_bar.addAction(self.always_on_top_action)\r\n\r\n    def _create_main_content(self):\r\n        central_widget = QWidget()\r\n        self.setCentralWidget(central_widget)\r\n        layout = QVBoxLayout()\r\n\r\n        self._create_title_label(layout)\r\n        self._create_watermark_selector(layout)\r\n        self._create_folder_selection(layout)\r\n        self._create_opacity_input(layout)\r\n        self._create_generate_button(layout)\r\n        central_widget.setLayout(layout)\r\n\r\n    def _create_title_label(self, layout):\r\n        label = QLabel(\"界面示例\")\r\n        label.setAlignment(Qt.AlignCenter)\r\n        layout.addWidget(label)\r\n\r\n    def _create_watermark_selector(self, layout):\r\n        self.combo = QComboBox()\r\n        for wm_type, data in self.config.items():\r\n            self.combo.addItem(data['display'], wm_type)\r\n        self.params_inputs = {\r\n            wm_type: self._create_param_inputs(data['params'])\r\n            for wm_type, data in self.config.items()\r\n        }\r\n        list = [wm_type for wm_type in self.config]\r\n        # layout.addWidget()\r\n        layout.addWidget(self.combo)\r\n        layout.addWidget(self.params_inputs[list[0]])\r\n\r\n    def _create_folder_selection(self, layout):\r\n        # 文件夹选择\r\n        self.folder_input = QLineEdit()\r\n        self.folder_input.setPlaceholderText(\"请选择文件夹\")\r\n        folder_button = QPushButton(\"选择文件夹\")\r\n        folder_button.clicked.connect(self._emit_folder_selected)\r\n        layout.addWidget(self.folder_input)\r\n        layout.addWidget(folder_button)\r\n\r\n    def _create_opacity_input(self, layout):\r\n        # 不透明度输入\r\n        self.opacity_input = QLineEdit()\r\n        self.opacity_input.setPlaceholderText(\"请输入不透明度，默认50%\")\r\n        layout.addWidget(self.opacity_input)\r\n\r\n    def _create_generate_button(self, layout):\r\n        # 生成按钮\r\n        generate_btn = QPushButton(\"生成水印\")\r\n        generate_btn.clicked.connect(\r\n            lambda: self.generate_triggered.emit(\r\n                # self.combo_box.currentIndex()\r\n                self.combo.currentIndex()\r\n            )\r\n        )\r\n        layout.addWidget(generate_btn)\r\n\r\n    def _emit_folder_selected(self):\r\n        folder = self.folder_selected.emit()\r\n        if folder:\r\n            self.folder_input.text()\r\n\r\n\r\n    def update_topmost_status(self, is_topmost):\r\n        text = \"取消始终置顶\" if is_topmost else \"始终置顶\"\r\n        self.always_on_top_action.setText(text)\r\n        self.show()\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ui/main_window.py b/ui/main_window.py
+--- a/ui/main_window.py	(revision 1c696bdaffa284c9a24ac32d812c353c0dcab0d1)
++++ b/ui/main_window.py	(date 1740624328795)
+@@ -12,6 +12,34 @@
+ 
+ from ui.interfaces import IMainWindow
+ 
++def _create_param_inputs(self, params):
++    container = QWidget()
++    container.input_fields = {}
++    layout = QVBoxLayout()
++
++    for param_key, param_config in params.items():
++        # 兼容两种配置格式：
++        # 1. 新版字典格式：{label: "标签", default: 值}
++        # 2. 旧版简写格式：参数名: 值 (自动转成{label: 参数名, default: 值})
++        if isinstance(param_config, dict):
++            label = param_config.get("label", param_key)
++            default_value = param_config.get("default", "")
++        else:
++            label = param_key
++            default_value = param_config
++
++        # 创建界面元素
++        q_label = QLabel(label)
++        input_field = QLineEdit(str(default_value))
++
++        # 存储参数名到输入框的映射（注意仍然用param_key作为字典键）
++        container.input_fields[param_key] = input_field
++        layout.addWidget(q_label)
++        layout.addWidget(input_field)
++
++    container.setLayout(layout)
++    return container
++
+ class MainWindow(IMainWindow):
+     # 定义信号（用于向Presenter传递事件）
+     folder_selected = Signal()
+Index: config.yaml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>combo_box:\r\n  options:\r\n    - \"选项 1\"\r\n    - \"选项 2\"\r\n  default_index: 0\r\n\r\n\r\nwatermark_options:\r\n  - display: \"正常\"\r\n    value: \"watermark_image_450\"\r\n    handler: \"handle_normal_watermark\"\r\n  - display: \"雾化\"\r\n    value: \"text_watermark\"\r\n    handler: \"handle_foggy_watermark\"\r\n\r\nwatermark_types:\r\n  image:\r\n    display: \"图片水印\"\r\n    handler: \"process_image_watermark\"\r\n    params:\r\n      default_opacity: 75\r\n      allowed_formats: [jpg, png]\r\n  text:\r\n    display: \"文字水印\"\r\n    handler: \"process_text_watermark\"\r\n    params:\r\n      default_font: \"Arial\"\r\n      max_length: 100\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/config.yaml b/config.yaml
+--- a/config.yaml	(revision 1c696bdaffa284c9a24ac32d812c353c0dcab0d1)
++++ b/config.yaml	(date 1740624307210)
+@@ -18,11 +18,19 @@
+     display: "图片水印"
+     handler: "process_image_watermark"
+     params:
+-      default_opacity: 75
+-      allowed_formats: [jpg, png]
++      default_opacity:
++        label: "默认透明度" # 增加标签配置
++        default: 75 # 参数默认值
++      allowed_formats:
++        label: "允许格式"
++        default: [jpg, png]
+   text:
+     display: "文字水印"
+     handler: "process_text_watermark"
+     params:
+-      default_font: "Arial"
+-      max_length: 100
++      default_font:
++        label: "默认字体"
++        default: "Arial"
++      max_length:
++        label: "最大长度"
++        default: 100
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"4e3d81b3-2670-4bf5-af0b-9de420058153\" name=\"更改\" comment=\"界面v1.0.0\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/ui/main_window.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ui/main_window.py\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n    <option name=\"RESET_MODE\" value=\"SOFT\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 2\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2tWUAYd8WdqwZeMiFCvmfXOrJSl\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"Python.main (1).executor\": \"Run\",\r\n    \"Python.main (2).executor\": \"Run\",\r\n    \"Python.main.executor\": \"Run\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"RunOnceActivity.git.unshallow\": \"true\",\r\n    \"deletionFromPopupRequiresConfirmation\": \"false\",\r\n    \"git-widget-placeholder\": \"dev\",\r\n    \"last_opened_file_path\": \"C:/Users/Design-10/PycharmProjects/PythonProject/ui\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"settings.editor.selected.configurable\": \"preferences.keymap\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"CopyFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\Design-10\\PycharmProjects\\PythonProject\\ui\" />\r\n      <recent name=\"C:\\Users\\Design-10\\PycharmProjects\\PythonProject\\utils\" />\r\n      <recent name=\"C:\\Users\\Design-10\\PycharmProjects\\PythonProject\" />\r\n      <recent name=\"C:\\Users\\Design-10\\PycharmProjects\\PythonProject\\resources\\input\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"main\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"PythonProject\" />\r\n      <option name=\"ENV_FILES\" value=\"\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/main.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Python.main\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-PY-243.24978.54\" />\r\n        <option value=\"bundled-python-sdk-91e3b7efe1d4-466328ff949b-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.24978.54\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"应用程序级\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"默认任务\">\r\n      <changelist id=\"4e3d81b3-2670-4bf5-af0b-9de420058153\" name=\"更改\" comment=\"\" />\r\n      <created>1740467180516</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1740467180516</updated>\r\n      <workItem from=\"1740467181551\" duration=\"1794000\" />\r\n      <workItem from=\"1740468993320\" duration=\"19921000\" />\r\n      <workItem from=\"1740615126860\" duration=\"8580000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"界面v1.0.0\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1740532356820</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1740532356820</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"2\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"界面v1.0.0\" />\r\n    <MESSAGE value=\"Revert &quot;界面v1.0.1 更新日志、配置文件解耦&quot;&#10;&#10;This reverts commit 6c6c6a45\" />\r\n    <MESSAGE value=\"UI-v1.0.4-beta-basic-v1.0.0\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Revert &quot;界面v1.0.1 更新日志、配置文件解耦&quot;&#10;&#10;This reverts commit 6c6c6a45\" />\r\n  </component>\r\n  <component name=\"XDebuggerManager\">\r\n    <breakpoint-manager>\r\n      <breakpoints>\r\n        <line-breakpoint enabled=\"true\" suspend=\"THREAD\" type=\"python-line\">\r\n          <url>file://$PROJECT_DIR$/ttt/main.py</url>\r\n          <line>77</line>\r\n          <option name=\"timeStamp\" value=\"1\" />\r\n        </line-breakpoint>\r\n        <line-breakpoint enabled=\"true\" suspend=\"THREAD\" type=\"python-line\">\r\n          <url>file://$PROJECT_DIR$/presenter/main_presenter.py</url>\r\n          <line>97</line>\r\n          <option name=\"timeStamp\" value=\"25\" />\r\n        </line-breakpoint>\r\n        <line-breakpoint enabled=\"true\" suspend=\"THREAD\" type=\"python-line\">\r\n          <url>file://$PROJECT_DIR$/ui/main_window.py</url>\r\n          <line>94</line>\r\n          <option name=\"timeStamp\" value=\"33\" />\r\n        </line-breakpoint>\r\n        <line-breakpoint enabled=\"true\" suspend=\"THREAD\" type=\"python-line\">\r\n          <url>file://$PROJECT_DIR$/ui/main_window.py</url>\r\n          <line>69</line>\r\n          <option name=\"timeStamp\" value=\"35\" />\r\n        </line-breakpoint>\r\n      </breakpoints>\r\n    </breakpoint-manager>\r\n  </component>\r\n  <component name=\"com.intellij.coverage.CoverageDataManagerImpl\">\r\n    <SUITE FILE_PATH=\"coverage/PythonProject$main.coverage\" NAME=\"main 覆盖结果\" MODIFIED=\"1740623407987\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"false\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\r\n    <SUITE FILE_PATH=\"coverage/PythonProject$main__2_.coverage\" NAME=\"main (2) 覆盖结果\" MODIFIED=\"1740468360283\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"false\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/ttt\" />\r\n    <SUITE FILE_PATH=\"coverage/PythonProject$main__1_.coverage\" NAME=\"main (1) 覆盖结果\" MODIFIED=\"1740470317329\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"false\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 1c696bdaffa284c9a24ac32d812c353c0dcab0d1)
++++ b/.idea/workspace.xml	(date 1740624328821)
+@@ -6,6 +6,7 @@
+   <component name="ChangeListManager">
+     <list default="true" id="4e3d81b3-2670-4bf5-af0b-9de420058153" name="更改" comment="界面v1.0.0">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yaml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/ui/main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main_window.py" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+@@ -42,7 +43,7 @@
+     "RunOnceActivity.git.unshallow": "true",
+     "deletionFromPopupRequiresConfirmation": "false",
+     "git-widget-placeholder": "dev",
+-    "last_opened_file_path": "C:/Users/Design-10/PycharmProjects/PythonProject/ui",
++    "last_opened_file_path": "C:/Users/Design-10/PycharmProjects/PythonProject",
+     "node.js.detected.package.eslint": "true",
+     "node.js.detected.package.tslint": "true",
+     "node.js.selected.package.eslint": "(autodetect)",
+@@ -54,9 +55,9 @@
+ }]]></component>
+   <component name="RecentsManager">
+     <key name="CopyFile.RECENT_KEYS">
++      <recent name="C:\Users\Design-10\PycharmProjects\PythonProject" />
+       <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\ui" />
+       <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\utils" />
+-      <recent name="C:\Users\Design-10\PycharmProjects\PythonProject" />
+       <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\resources\input" />
+     </key>
+   </component>
+@@ -108,7 +109,7 @@
+       <updated>1740467180516</updated>
+       <workItem from="1740467181551" duration="1794000" />
+       <workItem from="1740468993320" duration="19921000" />
+-      <workItem from="1740615126860" duration="8580000" />
++      <workItem from="1740615126860" duration="9141000" />
+     </task>
+     <task id="LOCAL-00001" summary="界面v1.0.0">
+       <option name="closed" value="true" />

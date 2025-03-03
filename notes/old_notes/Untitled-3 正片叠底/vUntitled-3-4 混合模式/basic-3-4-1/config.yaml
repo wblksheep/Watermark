@@ -1,0 +1,9 @@
+spacing: 600
+opacity: 100
+shadow_opacity: 50
+line_width: 16
+foggy_line_width: 12
+dash_length: 16
+
+crop:
+  output_width: 2000

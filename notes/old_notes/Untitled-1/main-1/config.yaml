@@ -1,0 +1,8 @@
+spacing: 600
+opacity: 20
+shadow_opacity: 10
+line_width: 6
+foggy_line_width: 12
+
+crop:
+  output_width: 2000

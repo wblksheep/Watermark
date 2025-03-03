@@ -1,0 +1,13 @@
+spacing: 300
+opacity: 100
+shadow_opacity: 100
+line_width: 6
+foggy_line_width: 0
+dash_length: 18
+
+color: [200, 200, 200, 255]
+
+crop:
+  output_width: 2000
+
+final_opacity: 50

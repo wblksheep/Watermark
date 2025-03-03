@@ -1,0 +1,7 @@
+spacing: 300
+opacity: 20
+shadow_opacity: 10
+line_width: 6
+
+crop:
+  output_width: 2000
