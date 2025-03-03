@@ -5,12 +5,184 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4e3d81b3-2670-4bf5-af0b-9de420058153" name="更改" comment="界面v1.0.0">
-      <change afterPath="$PROJECT_DIR$/src/utils/basic_multi_processor.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/serialization.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/test_log_integrity.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/interfaces/base_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/interfaces/base_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/basic.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/basic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Watermark.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/note_update.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/.idea/notes.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-1/Untitled-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-1/basic-1/basic-3.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-1/basic-1/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-1/basic-1/main-5.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-1/main-1/basic-1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-1/main-1/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-1/main-1/main-1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-10.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-11/0/new_test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-11/0/test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-11/1/new_test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-11/1/test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-11/2/new_test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-11/2/test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-11/Untitled-11-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-11/Untitled-11-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-11/Untitled-11.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-12.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-13.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-14 优化presenter 区分其与model的区别/Untitled-14-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-14 优化presenter 区分其与model的区别/Untitled-14-2 简单和策略的区别/Untitled-14-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-14 优化presenter 区分其与model的区别/Untitled-14-3.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-14 优化presenter 区分其与model的区别/Untitled-14-4 方法抽象 属性方法 路由表/Untitled-14-4-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-14 优化presenter 区分其与model的区别/Untitled-14-4 方法抽象 属性方法 路由表/Untitled-14-4-2 View和Presenter分离的优势/Untitled-14-4-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-14 优化presenter 区分其与model的区别/Untitled-14-4 方法抽象 属性方法 路由表/Untitled-14-4-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-14 优化presenter 区分其与model的区别/Untitled-14-4 方法抽象 属性方法 路由表/Untitled-14-4-3 路由表相关问题/Untitled-14-4-3-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-14 优化presenter 区分其与model的区别/Untitled-14-4 方法抽象 属性方法 路由表/Untitled-14-4-3 路由表相关问题/Untitled-14-4-3.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-14 优化presenter 区分其与model的区别/Untitled-14-4 方法抽象 属性方法 路由表/Untitled-14-4-3.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-14 优化presenter 区分其与model的区别/Untitled-14-4 方法抽象 属性方法 路由表/Untitled-14-4-4 数据解析和数据验证/Untitled-14-4-4.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-14 优化presenter 区分其与model的区别/Untitled-14-4 方法抽象 属性方法 路由表/Untitled-14-4-4.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-14 优化presenter 区分其与model的区别/Untitled-14-4 方法抽象 属性方法 路由表/Untitled-14-4-5.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-14 优化presenter 区分其与model的区别/Untitled-14-4 方法抽象 属性方法 路由表/Untitled-14-4-5/Untitled-14-4-5.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-14 优化presenter 区分其与model的区别/Untitled-14-4 方法抽象 属性方法 路由表/Untitled-14-4.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-14 优化presenter 区分其与model的区别/Untitled-14-4.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-14 优化presenter 区分其与model的区别/Untitled-14.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-14.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-15.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-16.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-17.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-17/Untitled-17-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-17/Untitled-17-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-17/Untitled-17.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-18 优化 main_window/Untitled-18-1 依赖注入和信号与槽机制对比/Untitled-18-1-1 springboot中的依赖注入/Untitled-18-1-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-18 优化 main_window/Untitled-18-1 依赖注入和信号与槽机制对比/Untitled-18-1-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-18 优化 main_window/Untitled-18-1 依赖注入和信号与槽机制对比/Untitled-18-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-18 优化 main_window/Untitled-18-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-18 优化 main_window/Untitled-18-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-18 优化 main_window/Untitled-18-2输入框引用优化问题/Untitled-18-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-18 优化 main_window/Untitled-18-3 配置和显示不一致问题/Untitled-18-3-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-18 优化 main_window/Untitled-18-3 配置和显示不一致问题/Untitled-18-3-2 combo界面变换/Untitled-18-3-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-18 优化 main_window/Untitled-18-3 配置和显示不一致问题/Untitled-18-3-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-18 优化 main_window/Untitled-18-3 配置和显示不一致问题/Untitled-18-3.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-18 优化 main_window/Untitled-18-3.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-18 优化 main_window/Untitled-18.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-18.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-19 Model配置传参bug/Untitled-19-1 wrap包装注释bug/Untitled-19-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-19 Model配置传参bug/Untitled-19-1 wrap包装注释bug/v1.0.1.0/Untitled-19-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-19 Model配置传参bug/Untitled-19-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-19 Model配置传参bug/Untitled-19-2 参数校验逻辑bug/Untitled-19-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-19 Model配置传参bug/Untitled-19-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-19 Model配置传参bug/Untitled-19-3.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-19 Model配置传参bug/Untitled-19.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-19.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/Untitled-2-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/Untitled-2-10.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/Untitled-2-11.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/Untitled-2-12.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/Untitled-2-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/Untitled-2-3.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/Untitled-2-4.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/Untitled-2-5.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/Untitled-2-6.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/Untitled-2-7.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/Untitled-2-8.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/Untitled-2-9.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/Untitled-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/basic-2-2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/final/basic.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/final/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/final/generate_npy.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/final/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/main-2-1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/main-2-3.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/main-2-4.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-2 界面布局/main-2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-1 时间复杂度分析/Untitled-20-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-2 图片质量保存问题/Untitled-20-2-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-2 图片质量保存问题/Untitled-20-2-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-2 图片质量保存问题/Untitled-20-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-3 算法优化问题/Untitled-20-3-1 线程内日志信息记录/Untitled-20-3-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-3 算法优化问题/Untitled-20-3-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-3 算法优化问题/Untitled-20-3.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-3.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/Untitled-20-4-1-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/Untitled-20-4-1-2 接口日志问题/Untitled-20-4-1-2-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/Untitled-20-4-1-2 接口日志问题/Untitled-20-4-1-2-2 EOFERROR/Untitled-20-4-1-2-2-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/Untitled-20-4-1-2 接口日志问题/Untitled-20-4-1-2-2 EOFERROR/Untitled-20-4-1-2-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/Untitled-20-4-1-2 接口日志问题/Untitled-20-4-1-2-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/Untitled-20-4-1-2 接口日志问题/Untitled-20-4-1-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/Untitled-20-4-1-2 接口日志问题/xUntitled-20-4-1-2-1 EOFERROR/Untitled-20-4-1-2-1-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/Untitled-20-4-1-2 接口日志问题/xUntitled-20-4-1-2-1 EOFERROR/Untitled-20-4-1-2-1-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/Untitled-20-4-1-2 接口日志问题/xUntitled-20-4-1-2-1 EOFERROR/Untitled-20-4-1-2-1-3.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/Untitled-20-4-1-2 接口日志问题/xUntitled-20-4-1-2-1 EOFERROR/Untitled-20-4-1-2-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/Untitled-20-4-1-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/Untitled-20-4-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/xUntitled-20-4-1-1 接口日志问题/Untitled-20-4-1-1-2-1 EOFError/Untitled-20-4-1-1-2-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/xUntitled-20-4-1-1 接口日志问题/Untitled-20-4-1-1-2-1 EOFError/Untitled-20-4-1-1-2-2-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/xUntitled-20-4-1-1 接口日志问题/Untitled-20-4-1-1-2-1 EOFError/Untitled-20-4-1-1-2-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/xUntitled-20-4-1-1 接口日志问题/Untitled-20-4-1-1-2-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/xUntitled-20-4-1-1 接口日志问题/Untitled-20-4-1-1-2-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/xUntitled-20-4-1-1 接口日志问题/Untitled-20-4-1-1-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1 WatermarkProcessor接口/xUntitled-20-4-1-1 接口日志问题/Untitled-20-4-1-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4 Model调用接口问题/Untitled-20-4.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20-4.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20 Model层水印添加/Untitled-20.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-20.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/Untitled-3-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/Untitled-3-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/Untitled-3-3.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/Untitled-3-5.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/Untitled-3-7.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/Untitled-3-8.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/Untitled-3.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/main-3-9.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/vUntitled-3-4 混合模式/Untitled-3-4-1.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/vUntitled-3-4 混合模式/Untitled-3-4-2.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/vUntitled-3-4 混合模式/Untitled-3-4-3.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/vUntitled-3-4 混合模式/Untitled-3-4-4.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/vUntitled-3-4 混合模式/Untitled-3-4-5.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/vUntitled-3-4 混合模式/Untitled-3-4-6.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/vUntitled-3-4 混合模式/Untitled-3-4.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/vUntitled-3-4 混合模式/basic-3-4-1/basic-3-4-1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/vUntitled-3-4 混合模式/basic-3-4-1/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/vUntitled-3-4 混合模式/basic-3-4-1/main-3-4-1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/vUntitled-3-4 混合模式/main-3-4-1/main-3-4-1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/vUntitled-3-4 混合模式/solve.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/vUntitled-3-6.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-3 正片叠底/vUntitled-3-9 正片叠底效果 但没啥用.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-4.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-5.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-6.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-7.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-8.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes/old_notes/Untitled-9.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config.yaml.bak" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/container/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/container/container.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/watermark_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/presenter/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/presenter/main_presenter.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/interfaces.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/main_window.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/basic.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/config.yaml.bak" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,28 +196,14 @@
       </list>
     </option>
   </component>
-  <component name="FlaskConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform)); sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo, NoAppException&#10;for module in [&quot;main.py&quot;, &quot;wsgi.py&quot;, &quot;app.py&quot;]:&#10;    try: locals().update(ScriptInfo(app_import_path=module, create_app=None).load_app().make_shell_context()); print(&quot;\nFlask App: %s&quot; % app.import_name); break&#10;    except NoAppException: pass">
-    <envs>
-      <env key="FLASK_APP" value="app" />
-    </envs>
-    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform)); sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo, NoAppException&#10;for module in [&quot;main.py&quot;, &quot;wsgi.py&quot;, &quot;app.py&quot;]:&#10;    try: locals().update(ScriptInfo(app_import_path=module, create_app=None).load_app().make_shell_context()); print(&quot;\nFlask App: %s&quot; % app.import_name); break&#10;    except NoAppException: pass" />
-    <option name="myEnvs">
-      <map>
-        <entry key="FLASK_APP" value="app" />
-      </map>
-    </option>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="docs" />
+        <entry key="$PROJECT_DIR$" value="feat/add-api" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="HARD" />
-  </component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="file://$USER_HOME$/.conda/envs/haiyin/Lib/site-packages/PIL/Image.py" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
@@ -58,32 +216,29 @@
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python tests.Python tests for test_serialization.test_worker_init.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in test_serialization.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python.basic.executor&quot;: &quot;Run&quot;,
-    &quot;Python.basic2.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.main (1).executor&quot;: &quot;Run&quot;,
-    &quot;Python.main (2).executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.serialization.executor&quot;: &quot;Run&quot;,
-    &quot;Python.watermark_model.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;deletionFromPopupRequiresConfirmation&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feat/multi-processor&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Design-10/PycharmProjects/PythonProject/src/utils&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;terminal&quot;,
-    &quot;settings.editor.splitter.proportion&quot;: &quot;0.36302295&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.basic.executor": "Debug",
+    "Python.basic2.executor": "Debug",
+    "Python.main (1).executor": "Run",
+    "Python.main (2).executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.watermark_model.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "deletionFromPopupRequiresConfirmation": "false",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Users/Design-10/PycharmProjects/PythonProject/notes",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "settings.editor.splitter.proportion": "0.36302295",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
       <console-settings module-name="PythonProject" is-module-sdk="true">
@@ -94,11 +249,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\src\utils" />
-      <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\src\models" />
       <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\notes\old_notes\Untitled-20 Model层水印添加\Untitled-20-4 Model调用接口问题" />
       <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\notes\old_notes" />
       <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\src" />
+      <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\src\models" />
+      <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\docs" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\src\models\interfaces\impl" />
@@ -109,6 +264,29 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.main (1)">
+    <configuration name="basic" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Watermark" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/utils" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/utils/basic.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Watermark" />
       <option name="ENV_FILES" value="" />
@@ -155,34 +333,15 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="serialization" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="Watermark" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/utils" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/utils/serialization.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+    <list>
+      <item itemvalue="Python.main (1)" />
+      <item itemvalue="Python.main" />
+      <item itemvalue="Python.basic" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.main (1)" />
-        <item itemvalue="Python.serialization" />
-        <item itemvalue="Python.main" />
+        <item itemvalue="Python.basic" />
         <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
@@ -214,8 +373,6 @@
       <workItem from="1740655322885" duration="33178000" />
       <workItem from="1740791762995" duration="56000" />
       <workItem from="1740824209513" duration="2901000" />
-      <workItem from="1740968845777" duration="702000" />
-      <workItem from="1740969564555" duration="10622000" />
     </task>
     <task id="LOCAL-00001" summary="界面v1.0.0">
       <option name="closed" value="true" />
@@ -263,54 +420,70 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+        <line-breakpoint suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/ttt/main.py</url>
           <line>77</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/presenter/main_presenter.py</url>
-          <line>24</line>
-          <option name="timeStamp" value="2" />
+        <line-breakpoint suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/presenter/main_presenter.py</url>
+          <line>97</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/ui/main_window.py</url>
+          <line>114</line>
+          <option name="timeStamp" value="46" />
+        </line-breakpoint>
+        <line-breakpoint suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/ui/main_window.py</url>
+          <line>96</line>
+          <option name="timeStamp" value="49" />
+        </line-breakpoint>
+        <line-breakpoint suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/ui/main_window.py</url>
+          <line>132</line>
+          <option name="timeStamp" value="50" />
+        </line-breakpoint>
+        <line-breakpoint suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/ui/main_window.py</url>
+          <line>118</line>
+          <option name="timeStamp" value="51" />
+        </line-breakpoint>
+        <line-breakpoint suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/presenter/main_presenter.py</url>
+          <line>47</line>
+          <option name="timeStamp" value="58" />
+        </line-breakpoint>
+        <line-breakpoint suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/ui/main_window.py</url>
+          <line>141</line>
+          <option name="timeStamp" value="63" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/ui/main_window.py</url>
-          <line>100</line>
-          <option name="timeStamp" value="4" />
+          <url>file://$PROJECT_DIR$/src/ui/main_window.py</url>
+          <line>185</line>
+          <option name="timeStamp" value="66" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/config.py</url>
-          <line>10</line>
-          <option name="timeStamp" value="5" />
+          <url>file://$PROJECT_DIR$/src/presenter/main_presenter.py</url>
+          <line>49</line>
+          <option name="timeStamp" value="96" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/ui/main_window.py</url>
-          <line>71</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/main.py</url>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/utils/serialization.py</url>
-          <line>6</line>
-          <option name="timeStamp" value="12" />
+          <url>file://$PROJECT_DIR$/src/presenter/main_presenter.py</url>
+          <line>54</line>
+          <option name="timeStamp" value="98" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Watermark$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1740983793873" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/models" />
-    <SUITE FILE_PATH="coverage/Watermark$serialization.coverage" NAME="serialization Coverage Results" MODIFIED="1740983541711" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/utils" />
-    <SUITE FILE_PATH="coverage/Watermark$basic.coverage" NAME="basic Coverage Results" MODIFIED="1740979569445" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/utils" />
     <SUITE FILE_PATH="coverage/PythonProject$main.coverage" NAME="main Coverage Results" MODIFIED="1740709594599" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/PythonProject$basic2.coverage" NAME="basic2 Coverage Results" MODIFIED="1740723507702" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
-    <SUITE FILE_PATH="coverage/Watermark$.coverage" NAME=" Coverage Results" MODIFIED="1740981930476" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/utils" />
     <SUITE FILE_PATH="coverage/PythonProject$main__2_.coverage" NAME="main (2) 覆盖结果" MODIFIED="1740468360283" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ttt" />
     <SUITE FILE_PATH="coverage/PythonProject$basic.coverage" NAME="basic 覆盖结果" MODIFIED="1740812155569" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/utils" />
     <SUITE FILE_PATH="coverage/PythonProject$main__1_.coverage" NAME="main (1) 覆盖结果" MODIFIED="1740817489334" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/models" />
     <SUITE FILE_PATH="coverage/PythonProject$watermark_model.coverage" NAME="watermark_model Coverage Results" MODIFIED="1740706242346" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/models" />
-    <SUITE FILE_PATH="coverage/Watermark$main.coverage" NAME="main Coverage Results" MODIFIED="1740975863405" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
 </project>

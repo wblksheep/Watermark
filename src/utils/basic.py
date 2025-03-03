@@ -9,6 +9,14 @@ import logging
 from logging.handlers import QueueHandler, QueueListener
 import multiprocessing as mp
 from multiprocessing import Pool, cpu_count
+# # 配置日志
+# logging.basicConfig(
+#     level=logging.INFO,
+#     format="%(asctime)s - %(name)s - [%(levelname)s] - %(message)s",
+#     handlers=[logging.FileHandler("watermark.log"), logging.StreamHandler()]
+# )
+# logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 # 读取图片文件
 def load_image(image_path):
     if not os.path.exists(image_path):
@@ -44,6 +52,8 @@ def process_single_image(input_path, output_path, config, npy_data, quality=30):
     try:
         # 加载并预处理图片
         base_image = load_image(input_path)
+        # if base_image.mode != "RGBA":
+        #     base_image = base_image.convert("RGBA")
 
         scale = config['output_height'] / base_image.height
         width = int(base_image.width * scale)
@@ -59,6 +69,7 @@ def process_single_image(input_path, output_path, config, npy_data, quality=30):
             base_image.save(buffer, format="PNG", compress_level=int((100-quality)/10))  # 最高压缩级别
             buffer.seek(0)
             base_image = Image.open(buffer)
+        # npy_data = npy_data.resize((config['output_height'], config['output_height']))
         np.resize(npy_data, (config['output_height'], config['output_height']))
         # 应用水印
         watermarked = overlay_and_crop(base_image, npy_data)
@@ -66,6 +77,7 @@ def process_single_image(input_path, output_path, config, npy_data, quality=30):
 
         if os.path.splitext(output_path)[1] in [".jpeg", ".jpg"]:
             watermarked = watermarked.convert("RGB")
+        # watermarked = watermarked.convert("RGB")
         # 保存结果
         watermarked.save(output_path, quality=100)
         logger.info(f"Processed: {os.path.basename(input_path)}")
@@ -133,6 +145,17 @@ def generate_watermark(input_folder, watermark_type, opacity, quality):
     for fmt in supported_formats:
         image_files.extend(glob.glob(os.path.join(input_folder, fmt), recursive=True))
 
+    # for input_path in image_files:
+    #     file_name = os.path.basename(input_path)
+    #     output_path = os.path.join(output_folder, file_name)
+    #     process_single_image_wrapper(input_path, output_path, config, npy_data, quality)
+    # # 批量处理
+    # with Pool(processes=cpu_count()) as pool:
+    #     logger = logging.getLogger(__name__)
+    #     pool.starmap(process_single_image_wrapper,
+    #                  [(input_path, os.path.join(output_folder, os.path.basename(input_path)), config, npy_data,
+    #                    quality)
+    #                   for input_path in image_files])
     with mp.Pool(
         processes=mp.cpu_count(),
         initializer=worker_init,
@@ -156,5 +179,13 @@ if __name__ == "__main__":
     watermark_type = config['npy_path']
     opacity = float(config['opacity'])
     quality = int(config['quality'])
+    # 配置日志
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - [%(levelname)s] - %(message)s",
+        handlers=[logging.FileHandler("watermark.log"), logging.StreamHandler()]
+    )
+    logger = logging.getLogger(__name__)
+    logger.info(f"start processing {input_folder}")
 
     generate_watermark(input_folder, watermark_type, opacity, quality=quality)
