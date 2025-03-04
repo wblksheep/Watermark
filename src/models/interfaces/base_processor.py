@@ -9,27 +9,43 @@ from .interfaces import IWatermarkProcessor, IWatermarkConfig
 import time
 from collections import defaultdict
 
+
 # 移除全局listener变量，改为类封装
 class LogSystem:
     _instance = None
+    _manager = None  # 共享Manager
+
 
     def __new__(cls):
         if not cls._instance:
             cls._instance = super().__new__(cls)
-            cls.manager = mp.Manager()
-            cls.log_queue = cls.manager.Queue()
-            file_handler = logging.FileHandler("watermark.log")
-            stream_handler = logging.StreamHandler()
-            formatter = logging.Formatter("%(asctime)s - %(processName)s - [%(levelname)s] - %(message)s")
-            file_handler.setFormatter(formatter)
-            stream_handler.setFormatter(formatter)
-            cls.listener = QueueListener(
-                cls.log_queue,
-                file_handler,
-                stream_handler
-            )
-            cls.listener.start()
+            # 统一在此初始化
+            cls._manager = cls.get_manager()
+            cls._setup()
         return cls._instance
+
+    @classmethod
+    def get_manager(cls):
+        if cls._manager is None:
+            cls._manager = mp.Manager()
+        return cls._manager
+
+    @classmethod
+    def _setup(cls):
+        """统一的初始化逻辑"""
+        cls.log_queue = cls._manager.Queue()
+        # 其他初始化代码...
+        file_handler = logging.FileHandler(f"watermark{os.getpid()}.log")# 进程独立日志文件
+        stream_handler = logging.StreamHandler()
+        formatter = logging.Formatter("%(asctime)s - %(processName)s - [%(levelname)s] - %(message)s")
+        file_handler.setFormatter(formatter)
+        stream_handler.setFormatter(formatter)
+        cls.listener = QueueListener(
+            cls.log_queue,
+            file_handler,
+            stream_handler
+        )
+        cls.listener.start()
 
     def __del__(self):
         if mp.current_process().name == 'MainProcess':
@@ -39,9 +55,15 @@ class LogSystem:
                 except Exception:  # 防止二次错误
                     pass
     def shutdown(self):
-        """显式关闭方法"""
-        self.listener.stop()
-        self.manager.shutdown()
+        """主进程显式关闭"""
+        if hasattr(self, 'listener') and self._is_main_process():
+            self.listener.stop()
+            self._manager.shutdown()
+
+    @staticmethod
+    def _is_main_process():
+        """可靠的主进程判断"""
+        return mp.current_process().name == 'MainProcess' and (os.getpid() == mp.parent_process().pid if mp.parent_process() is not None else True)
 
 def timing_decorator(func):
     def wrapper(*args, **kwargs):
@@ -122,7 +144,7 @@ class BaseWatermarkProcessor(IWatermarkProcessor):
         finally:
             # 资源回收计时
             shutdown_start = time.perf_counter()
-            log_system.shutdown()
+            LogSystem().shutdown()
             self._timings['shutdown'] = time.perf_counter() - shutdown_start
             # 总耗时计算
             self._timings['total'] = time.perf_counter() - total_start
