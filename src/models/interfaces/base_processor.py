@@ -29,8 +29,10 @@ class LogSystem:
         # 日志处理器配置
         file_handler = logging.FileHandler("watermark.log")
         stream_handler = logging.StreamHandler()
+        # 增强日志格式（增加毫秒精度）
         formatter = logging.Formatter(
-            "%(asctime)s - %(threadName)s - [%(levelname)s] - %(message)s"
+            "%(asctime)s.%(msecs)03d - %(threadName)-18s - [%(levelname)s] - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S"
         )
         file_handler.setFormatter(formatter)
         stream_handler.setFormatter(formatter)
@@ -62,7 +64,7 @@ def _default_stats():
     return {'count':0, 'total':0.0}
 
 class BaseWatermarkProcessor:
-    """优化后的多线程水印处理器"""
+    """优化后的多线程水印处理器（日志增强版）"""
 
     _SUPPORTED_EXT = {'.jpg', '.jpeg', '.png'}
 
@@ -75,10 +77,11 @@ class BaseWatermarkProcessor:
         self._init_logger()
 
     def _init_logger(self):
-        """初始化线程安全日志"""
-        self._logger = logging.getLogger(self.__class__.__name__)
+        """增强日志初始化"""
+        self._logger = logging.getLogger(f"{self.__class__.__name__}.{id(self)}")
         self._logger.addHandler(QueueHandler(self._log_queue))
         self._logger.setLevel(logging.INFO)
+        self._logger.propagate = False  # 避免重复记录
 
     def _print_stats(self):
         """打印详细的耗时统计"""
@@ -94,8 +97,8 @@ class BaseWatermarkProcessor:
             print(f"{task_type}: 平均{avg:.2f}s | 总数{stat['total']:.2f}s | 次数{stat['count']}")
 
     def process_batch(self, input_dir: Path, output_dir: Path) -> List[Path]:
-        """优化的批量处理方法"""
-        output_dir.mkdir(parents=True, exist_ok=True)
+        """添加批处理各阶段日志"""
+        self._logger.info(f"🟢 开始批处理任务 | 输入目录: {input_dir} | 输出目录: {output_dir}")
 
         tasks = list(self._generate_tasks(input_dir, output_dir))
         if not tasks:
@@ -103,15 +106,29 @@ class BaseWatermarkProcessor:
             return []
 
         try:
-            total_start = time.perf_counter()
-
+            # 生成任务阶段日志
+            task_start = time.perf_counter()
+            tasks = list(self._generate_tasks(input_dir, output_dir))
+            gen_time = time.perf_counter() - task_start
+            self._logger.info(
+                f"📂 扫描到 {len(tasks)} 个待处理文件 | "
+                f"耗时: {gen_time:.2f}s | "
+                f"跳过文件: {self._scan_skipped} 个"
+            )
+            # 线程池配置日志
+            max_workers = min(os.cpu_count() or 4, len(tasks))
+            self._logger.info(
+                f"🛠️ 初始化线程池 | 最大工作线程: {max_workers} | "
+                f"总任务数: {len(tasks)} | "
+                f"预计并发度: {min(max_workers, len(tasks))}"
+            )
             # 使用线程池替代进程池
             with ThreadPoolExecutor(
                 max_workers=min(os.cpu_count() or 4, len(tasks)),
                 initializer=self._init_worker
             ) as executor:
                 # 计时开始
-                self._timings['pool_init'] = time.perf_counter() - total_start
+                self._timings['pool_init'] = time.perf_counter() - task_start
 
                 # 任务分发
                 task_start = time.perf_counter()
@@ -135,39 +152,66 @@ class BaseWatermarkProcessor:
 
                 return results
         finally:
+            # 添加任务总结日志
+            success_rate = len(results) / len(tasks) if tasks else 0
+            self._logger.info(
+                f"🔚 任务完成总结 | 成功率: {success_rate:.1%} | "
+                f"成功: {len(results)} | 失败: {len(tasks) - len(results)}"
+            )
             self._timings['total'] = time.perf_counter() - total_start
             self._print_stats()
             self._log_system.shutdown()
 
     def _generate_tasks(self, input_dir: Path, output_dir: Path) -> Iterable[Tuple[Path, Path]]:
-        """任务生成器"""
+        """添加任务生成日志"""
+        self._scan_skipped = 0
         for entry in os.scandir(input_dir):
-            if entry.is_file() and Path(entry).suffix.lower() in self._SUPPORTED_EXT:
-                yield (Path(entry.path), output_dir / entry.name)
+            src_path = Path(entry.path)
+            if entry.is_file() and src_path.suffix.lower() in self._SUPPORTED_EXT:
+                dest_path = output_dir / entry.name
+                self._logger.debug(f"✅ 添加处理任务: {src_path} → {dest_path}")
+                yield (src_path, dest_path)
+            else:
+                self._scan_skipped += 1
+                self._logger.debug(f"⏩ 跳过非支持文件: {src_path}")
 
     @staticmethod
     def _init_worker():
-        """工作线程初始化"""
+        """增强工作线程日志"""
+        thread_id = threading.get_ident()
         logger = logging.getLogger()
-        logger.addHandler(QueueHandler(LogSystem().log_queue))
-        logger.setLevel(logging.INFO)
+        logger.info(f"🧵 工作线程启动 | TID: {thread_id} | 准备就绪")
 
     def _process_wrapper(self, task: Tuple[Path, Path]) -> Tuple[bool, Path]:
-        """异常处理包装器"""
+        """添加详细任务日志"""
+        input_path, output_path = task
+        thread_name = threading.current_thread().name
         try:
+            # 任务开始日志
+            self._logger.info(
+                f"⏳ 开始处理文件 | 线程: {thread_name} | "
+                f"输入: {input_path} | 输出: {output_path}"
+            )
             start_time = time.perf_counter()
-
-            # 实际处理逻辑
-            self.process_single(task[0], task[1])
-
+            self.process_single(input_path, output_path)
             cost = time.perf_counter() - start_time
             self._task_stats['process_single']['count'] += 1
             self._task_stats['process_single']['total'] += cost
-
-            return (True, task)
+            # 成功日志
+            self._logger.info(
+                f"✅ 处理成功 | 线程: {thread_name} | "
+                f"耗时: {cost:.2f}s | 输出文件: {output_path}"
+            )
+            return (True, output_path)
         except Exception as e:
-            self._logger.error(f"处理失败: {task} - {str(e)}", exc_info=True)
-            return (False, task)
+            # 失败日志（包含异常类型）
+            error_type = type(e).__name__
+            self._logger.error(
+                f"❌ 处理失败 | 线程: {thread_name} | "
+                f"文件: {input_path} | 错误类型: {error_type} | 详情: {str(e)}",
+                exc_info=True
+            )
+            return (False, output_path)
 
     def process_single(self, input_path: Path, output_path: Path):
         """具体处理逻辑（需子类实现）"""
