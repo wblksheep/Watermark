@@ -8,7 +8,7 @@ class YamlWatermarkConfig(IWatermarkConfig):
     """YAML配置加载器"""
 
     def __init__(self, config_path: Path):
-        with open(config_path) as f:
+        with open(config_path, "r", encoding="utf-8") as f:
             self._config = yaml.safe_load(f)['watermark']
 
     @property

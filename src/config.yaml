@@ -1,11 +1,9 @@
 watermark:
-  output_height: 2000
-  normal:
-    handler: "process_normal_watermark"
-    npy_path: "watermark_normal_450"
-  foggy:
-    handler: "process_foggy_watermark"
-    npy_path: "watermark_foggy_450"
+  input_folder: "resources/input"
+  opacity: 50
+  npy_path: "watermark_normal_200"
+  quality: 30
+  output_height: 1000
 watermark_types:
   normal:
     display: "正常"
