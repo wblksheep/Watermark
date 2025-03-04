@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 import time
 import queue
 import threading
@@ -98,7 +99,7 @@ class BaseWatermarkProcessor:
 
     def process_batch(self, input_dir: Path, output_dir: Path) -> List[Path]:
         """添加批处理各阶段日志"""
-        self._logger.info(f"🟢 开始批处理任务 | 输入目录: {input_dir} | 输出目录: {output_dir}")
+        self._logger.info(f"开始批处理任务 | 输入目录: {input_dir} | 输出目录: {output_dir}")
 
         tasks = list(self._generate_tasks(input_dir, output_dir))
         if not tasks:
@@ -111,14 +112,14 @@ class BaseWatermarkProcessor:
             tasks = list(self._generate_tasks(input_dir, output_dir))
             gen_time = time.perf_counter() - task_start
             self._logger.info(
-                f"📂 扫描到 {len(tasks)} 个待处理文件 | "
+                f"扫描到 {len(tasks)} 个待处理文件 | "
                 f"耗时: {gen_time:.2f}s | "
                 f"跳过文件: {self._scan_skipped} 个"
             )
             # 线程池配置日志
             max_workers = min(os.cpu_count() or 4, len(tasks))
             self._logger.info(
-                f"🛠️ 初始化线程池 | 最大工作线程: {max_workers} | "
+                f"🛠初始化线程池 | 最大工作线程: {max_workers} | "
                 f"总任务数: {len(tasks)} | "
                 f"预计并发度: {min(max_workers, len(tasks))}"
             )
@@ -155,10 +156,10 @@ class BaseWatermarkProcessor:
             # 添加任务总结日志
             success_rate = len(results) / len(tasks) if tasks else 0
             self._logger.info(
-                f"🔚 任务完成总结 | 成功率: {success_rate:.1%} | "
+                f"任务完成总结 | 成功率: {success_rate:.1%} | "
                 f"成功: {len(results)} | 失败: {len(tasks) - len(results)}"
             )
-            self._timings['total'] = time.perf_counter() - total_start
+            self._timings['total'] = time.perf_counter() - task_start
             self._print_stats()
             self._log_system.shutdown()
 
@@ -169,18 +170,18 @@ class BaseWatermarkProcessor:
             src_path = Path(entry.path)
             if entry.is_file() and src_path.suffix.lower() in self._SUPPORTED_EXT:
                 dest_path = output_dir / entry.name
-                self._logger.debug(f"✅ 添加处理任务: {src_path} → {dest_path}")
+                self._logger.debug(f"添加处理任务: {src_path} → {dest_path}")
                 yield (src_path, dest_path)
             else:
                 self._scan_skipped += 1
-                self._logger.debug(f"⏩ 跳过非支持文件: {src_path}")
+                self._logger.debug(f"跳过非支持文件: {src_path}")
 
     @staticmethod
     def _init_worker():
         """增强工作线程日志"""
         thread_id = threading.get_ident()
         logger = logging.getLogger()
-        logger.info(f"🧵 工作线程启动 | TID: {thread_id} | 准备就绪")
+        logger.info(f"工作线程启动 | TID: {thread_id} | 准备就绪")
 
     def _process_wrapper(self, task: Tuple[Path, Path]) -> Tuple[bool, Path]:
         """添加详细任务日志"""
@@ -189,7 +190,7 @@ class BaseWatermarkProcessor:
         try:
             # 任务开始日志
             self._logger.info(
-                f"⏳ 开始处理文件 | 线程: {thread_name} | "
+                f"开始处理文件 | 线程: {thread_name} | "
                 f"输入: {input_path} | 输出: {output_path}"
             )
             start_time = time.perf_counter()
@@ -199,7 +200,7 @@ class BaseWatermarkProcessor:
             self._task_stats['process_single']['total'] += cost
             # 成功日志
             self._logger.info(
-                f"✅ 处理成功 | 线程: {thread_name} | "
+                f"处理成功 | 线程: {thread_name} | "
                 f"耗时: {cost:.2f}s | 输出文件: {output_path}"
             )
             return (True, output_path)
@@ -207,7 +208,7 @@ class BaseWatermarkProcessor:
             # 失败日志（包含异常类型）
             error_type = type(e).__name__
             self._logger.error(
-                f"❌ 处理失败 | 线程: {thread_name} | "
+                f"处理失败 | 线程: {thread_name} | "
                 f"文件: {input_path} | 错误类型: {error_type} | 详情: {str(e)}",
                 exc_info=True
             )
