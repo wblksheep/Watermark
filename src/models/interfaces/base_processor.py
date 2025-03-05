@@ -46,12 +46,21 @@ class LogSystem:
             respect_handler_level=True
         )
         cls.listener.start()
+        # cls.listener_thread = threading.Thread(target=cls.listener.start)
+
+    # def start(self):
+    #     self.listener_thread.start()
 
     def shutdown(self):
         """安全关闭日志系统"""
         self.listener.stop()
-        while not self.log_queue.empty():
-            time.sleep(0.1)  # 等待队列处理完成
+        # self.listener_thread.join()  # 等待监听线程处理完成并终止
+        # # 强制清空队列（可选）
+        # while not self.log_queue.empty():
+        #     try:
+        #         self.log_queue.get_nowait()
+        #     except queue.Empty:
+        #         break
 
 def timing_decorator(func):
     def wrapper(*args, **kwargs):
@@ -100,7 +109,7 @@ class BaseWatermarkProcessor:
     def process_batch(self, input_dir: Path, output_dir: Path) -> List[Path]:
         """添加批处理各阶段日志"""
         self._logger.info(f"开始批处理任务 | 输入目录: {input_dir} | 输出目录: {output_dir}")
-
+        output_dir.mkdir(parents=True, exist_ok=True)
         tasks = list(self._generate_tasks(input_dir, output_dir))
         if not tasks:
             self._logger.warning("未发现可处理文件")
@@ -161,7 +170,6 @@ class BaseWatermarkProcessor:
             )
             self._timings['total'] = time.perf_counter() - task_start
             self._print_stats()
-            self._log_system.shutdown()
 
     def _generate_tasks(self, input_dir: Path, output_dir: Path) -> Iterable[Tuple[Path, Path]]:
         """添加任务生成日志"""
@@ -217,6 +225,10 @@ class BaseWatermarkProcessor:
     def process_single(self, input_path: Path, output_path: Path):
         """具体处理逻辑（需子类实现）"""
         raise NotImplementedError
+
+    @property
+    def log_system(self) -> LogSystem:
+        return self._log_system
 
     @property
     def logger(self) -> logging.Logger:
