@@ -6,6 +6,10 @@ import numpy as np
 from ..base_processor import BaseWatermarkProcessor
 from ..interfaces import IWatermarkConfig
 
+# 参数对象定义
+class NormalWatermarkParams:
+    def __init__(self, opacity: float, blend_mode: str = "multiply"):
+        self.opacity = opacity
 
 class NormalWatermarkProcessor(BaseWatermarkProcessor):
     """常规水印处理器"""
