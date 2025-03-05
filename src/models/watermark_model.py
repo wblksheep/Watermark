@@ -23,11 +23,17 @@ class WatermarkModel:
         return getattr(self, self.config.config[wm_type]['handler'])
 
     def process_normal_watermark(self, folder,  **kwargs):
-        processor = self.processor_factory.create_normal_processor()
+        """根据类型处理文件"""
+        processor = self.processor_factory.create_processor("normal")
         # # 执行批量处理
         # input_dir = Path("input")
         output_dir = self._prepare_output_dir()
         return processor.process_batch(folder, output_dir)
+        # processor = self.processor_factory.create_normal_processor()
+        # # # 执行批量处理
+        # # input_dir = Path("input")
+        # output_dir = self._prepare_output_dir()
+        # return processor.process_batch(folder, output_dir)
 
     def _prepare_output_dir(self) -> Path:
         """创建输出目录（复用逻辑）"""
@@ -36,11 +42,17 @@ class WatermarkModel:
         return output_dir
 
     def process_foggy_watermark(self, folder, text="BH", **kwargs):
-        processor = self.processor_factory.create_normal_processor()
+        """根据类型处理文件"""
+        processor = self.processor_factory.create_processor("foggy")
         # # 执行批量处理
         # input_dir = Path("input")
         output_dir = self._prepare_output_dir()
         return processor.process_batch(folder, output_dir)
+        # processor = self.processor_factory.create_foggy_processor()
+        # # # 执行批量处理
+        # # input_dir = Path("input")
+        # output_dir = self._prepare_output_dir()
+        # return processor.process_batch(folder, output_dir)
 
 
 

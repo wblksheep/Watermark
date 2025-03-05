@@ -29,25 +29,25 @@ class FoggyWatermarkProcessor(BaseWatermarkProcessor):
         try:
             # 加载并预处理图片
             base_image = self.load_image(input_path)
-            scale = self.config.output_height / base_image.height
+            scale = self.config['output_height'] / base_image.height
             width = int(base_image.width * scale)
-            base_image = base_image.resize((width, self.config.output_height))
+            base_image = base_image.resize((width, self.config['output_height']))
             if base_image.mode == "RGB":
                 buffer = io.BytesIO()
-                base_image.save(buffer, format="JPEG", quality=self.config.quality)
+                base_image.save(buffer, format="JPEG", quality=self.config['quality'])
                 buffer.seek(0)
                 base_image = Image.open(buffer)
             else:
                 # PNG 压缩（无损但有压缩级别）
                 buffer = io.BytesIO()
-                base_image.save(buffer, format="PNG", compress_level=int((100 - self.config.quality) / 10))  # 最高压缩级别
+                base_image.save(buffer, format="PNG", compress_level=int((100 - self.config['quality']) / 10))  # 最高压缩级别
                 buffer.seek(0)
                 base_image = Image.open(buffer)
             # # 加载水印数据
             # npy_path = f"{self._watermark_data}.npy"
             # npy_data = load_npy(npy_path) * (opacity/100.0)
             npy_data = self._watermark_data
-            np.resize(npy_data, (self.config.output_height, self.config.output_height))
+            np.resize(npy_data, (self.config['output_height'], self.config['output_height']))
             # 应用水印
             watermarked = self.overlay_and_crop(base_image, npy_data)
 

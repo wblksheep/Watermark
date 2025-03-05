@@ -1,9 +1,14 @@
 watermark:
-  input_folder: "resources/input"
-  opacity: 50
-  npy_path: "watermark_normal_200"
-  quality: 30
-  output_height: 1000
+  normal:
+    opacity: 50
+    npy_path: "watermark_normal_200"  # 不同水印类型独立配置
+    output_height: 1000
+    quality: 30
+  foggy:
+    opacity: 50
+    npy_path: "watermark_foggy_200"  # 不同水印类型独立配置
+    output_height: 1000
+    quality: 30
 watermark_types:
   normal:
     display: "正常"
