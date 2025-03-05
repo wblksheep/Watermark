@@ -22,14 +22,19 @@ class WatermarkModel:
     def get_handler(self, wm_type):
         return getattr(self, self.config.config[wm_type]['handler'])
 
+
+
     def process_normal_watermark(self, folder,  **kwargs):
-        # print({'folder':folder, **kwargs})
-        """根据类型处理文件"""
         processor = self.processor_factory.create_processor("normal")
-        # # 执行批量处理
-        # input_dir = Path("input")
         output_dir = self._prepare_output_dir()
-        return processor.process_batch(folder, output_dir, **kwargs)
+        processor.process_batch(folder, output_dir, **kwargs)
+        # # print({'folder':folder, **kwargs})
+        # """根据类型处理文件"""
+        # processor = self.processor_factory.create_processor("normal")
+        # # # 执行批量处理
+        # # input_dir = Path("input")
+        # output_dir = self._prepare_output_dir()
+        # return processor.process_batch(folder, output_dir, **kwargs)
         # processor = self.processor_factory.create_normal_processor()
         # # # 执行批量处理
         # # input_dir = Path("input")

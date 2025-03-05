@@ -10,6 +10,9 @@ from typing import List, Tuple, Iterable, runtime_checkable, Protocol, TypeVar, 
 from concurrent.futures import ThreadPoolExecutor
 from collections import defaultdict
 
+from pydantic import ValidationError, BaseModel
+
+
 # 线程安全的日志系统
 class LogSystem:
     _instance = None
@@ -73,13 +76,13 @@ def timing_decorator(func):
 def _default_stats():
     return {'count':0, 'total':0.0}
 
-@runtime_checkable
-class ProcessParams(Protocol):
-    opacity: float
-    blend_mode: str
+class ProcessorParams(BaseModel):
+    """参数基类（定义公共字段）"""
+    opacity: float = 0.8
+    output_dir: Path
 
 # 泛型参数约束
-T = TypeVar("T", bound=ProcessParams)
+T = TypeVar("T", bound=ProcessorParams)
 
 class BaseWatermarkProcessor(Generic[T]):
     """优化后的多线程水印处理器（日志增强版）"""
@@ -93,6 +96,7 @@ class BaseWatermarkProcessor(Generic[T]):
         self._log_system = LogSystem()
         self._log_queue = self._log_system.log_queue
         self._init_logger()
+        self.default_params = self._parse_config(config)
 
     def _init_logger(self):
         """增强日志初始化"""
@@ -115,6 +119,16 @@ class BaseWatermarkProcessor(Generic[T]):
             print(f"{task_type}: 平均{avg:.2f}s | 总数{stat['total']:.2f}s | 次数{stat['count']}")
 
     def process_batch(self, input_dir: Path, output_dir: Path, **kwargs) -> List[Path]:
+        try:
+            final_params = self._validate_params(
+                ProcessorParams(
+                    **{**self.default_params, **kwargs},
+                    output_dir=output_dir
+                )
+            )
+        except ValidationError as e:
+            self.logger.exception(e)
+            # raise ValueError(f"参数校验失败: {e.errors()}")
         """添加批处理各阶段日志"""
         self._logger.info(f"开始批处理任务 | 输入目录: {input_dir} | 输出目录: {output_dir}")
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -241,19 +255,8 @@ class BaseWatermarkProcessor(Generic[T]):
         raise NotImplementedError
 
     def _validate_params(self, params: T):
-        """参数校验模板方法"""
-        # 运行时校验协议实现
-        if not isinstance(params, ProcessParams):  # 依赖 @runtime_checkable
-            missing = []
-            if not hasattr(params, 'opacity'):
-                missing.append('opacity')
-            if not hasattr(params, 'blend_mode'):
-                missing.append('blend_mode')
-            raise TypeError(f"参数缺少必要属性: {missing}")
-        if not (0 <= params.opacity <= 1):
-            raise ValueError("透明度需在0-1之间")
-        if params.blend_mode not in {"multiply", "overlay"}:
-            raise ValueError("无效的混合模式")
+        """返回具体参数类型（子类实现）"""
+        raise NotImplementedError
 
     @property
     def log_system(self) -> LogSystem:
@@ -266,3 +269,6 @@ class BaseWatermarkProcessor(Generic[T]):
     @property
     def config(self):
         return self._config
+
+    def _parse_config(self, config):
+        return {**config}

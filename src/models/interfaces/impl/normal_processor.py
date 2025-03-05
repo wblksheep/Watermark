@@ -3,11 +3,14 @@ import os
 from pathlib import Path
 from PIL import Image
 import numpy as np
-from ..base_processor import BaseWatermarkProcessor
+from ..base_processor import BaseWatermarkProcessor, ProcessorParams
 from ..interfaces import IWatermarkConfig
 
 # 参数对象定义
 class NormalParams:
+    """雾化水印参数"""
+    opacity: float = 0.2
+    blend_mode: int = "normal"
     """普通水印参数（隐式实现协议）"""
     def __init__(self, opacity: float, blend_mode: str = "multiply"):
         self.opacity = opacity
@@ -30,6 +33,10 @@ class NormalWatermarkProcessor(BaseWatermarkProcessor[NormalParams]):
         if not os.path.exists(npy_path):
             raise FileNotFoundError(f"npy文件 {npy_path} 不存在")
         return np.load(npy_path)
+
+    def _validate_params(self, output_dir: Path, params: ProcessorParams) -> NormalParams:
+        """转换并校验雾化专用参数"""
+        return NormalParams(**params.dict())
 
     def process_single(
         self,
