@@ -5,9 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4e3d81b3-2670-4bf5-af0b-9de420058153" name="更改" comment="界面v1.0.0">
+      <change afterPath="$PROJECT_DIR$/src/config_loader/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/config_loader/config/watermark.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/config_loader/config/yaml_watermark_config.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/config_loader/config_loader.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/factory/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/interfaces/base_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/interfaces/base_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/watermark_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/watermark_model.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +86,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "deletionFromPopupRequiresConfirmation": "false",
     "git-widget-placeholder": "dev",
-    "last_opened_file_path": "C:/Users/Design-10/.conda/envs/haiyin_python313/python.exe",
+    "last_opened_file_path": "C:/Users/Design-10/PycharmProjects/PythonProject/src/config_loader/config",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -103,11 +107,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\src\config_loader\config" />
       <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\src\utils" />
       <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\src\models" />
       <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\notes\old_notes\Untitled-20 Model层水印添加\Untitled-20-4 Model调用接口问题" />
       <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\notes\old_notes" />
-      <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\src" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\src\models\interfaces\impl" />
@@ -205,7 +209,7 @@
       <workItem from="1740824209513" duration="2901000" />
       <workItem from="1740968845777" duration="702000" />
       <workItem from="1740969564555" duration="10622000" />
-      <workItem from="1741132571989" duration="3084000" />
+      <workItem from="1741132571989" duration="5111000" />
     </task>
     <task id="LOCAL-00001" summary="界面v1.0.0">
       <option name="closed" value="true" />
@@ -263,7 +267,9 @@
     <MESSAGE value="Model-v1.0.6-beta-basic-v1.0.2.1 算法优化问题-多线程并行优化" />
     <MESSAGE value="Model-v1.0.6-beta-basic-v1.0.2.1 算法优化问题-多线程并行优化" />
     <MESSAGE value="界面v1.0.0" />
-    <option name="LAST_COMMIT_MESSAGE" value="界面v1.0.0" />
+    <MESSAGE value="- fix: program double usage" />
+    <MESSAGE value="- fix: program double usage" />
+    <option name="LAST_COMMIT_MESSAGE" value="- fix: program double usage" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

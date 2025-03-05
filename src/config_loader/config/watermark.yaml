@@ -1,0 +1,6 @@
+watermark:
+  input_folder: "resources/input"
+  opacity: 50
+  npy_path: "watermark_normal_200"
+  quality: 30
+  output_height: 1000

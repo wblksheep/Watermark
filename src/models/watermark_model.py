@@ -2,7 +2,9 @@ from pathlib import Path
 
 from pydantic import validate_arguments
 from functools import wraps
-from src.config import ConfigLoader
+
+from src.config_loader.config_loader import ConfigLoader
+from src.factory.processor_factory import ProcessorFactory
 from src.models.config_loader.config_loader import YamlWatermarkConfig
 from src.models.interfaces.impl.normal_processor import NormalWatermarkProcessor
 import logging
@@ -11,6 +13,7 @@ logger = logging.getLogger(__name__)
 class WatermarkModel:
     def __init__(self):
         self.config = ConfigLoader.load_watermark_config()
+        self.processor_factory = ProcessorFactory(self.config)
         self._build_handlers()
 
     def get_watermark_config(self):
@@ -20,23 +23,17 @@ class WatermarkModel:
         return getattr(self, self.config[wm_type]['handler'])
 
     def process_normal_watermark(self, folder,  **kwargs):
-        # 初始化配置
-        try:
-            config = YamlWatermarkConfig(Path("config.yaml"))
-        except Exception as e:
-            logger.exception(e)
-            raise e
-        # 创建处理器
-        processor = NormalWatermarkProcessor(
-            config=config,
-            npy_path="watermark_normal_200.npy"
-        )
+        processor = self.processor_factory.create_normal_processor()
         # # 执行批量处理
         # input_dir = Path("input")
-        output_dir = Path("output")
-        success_files = processor.process_batch(folder, output_dir)
+        output_dir = self._prepare_output_dir()
+        return processor.process_batch(folder, output_dir)
 
-        print(f"成功处理 {len(success_files)} 张图片")
+    def _prepare_output_dir(self) -> Path:
+        """创建输出目录（复用逻辑）"""
+        output_dir = Path("output")
+        output_dir.mkdir(exist_ok=True)
+        return output_dir
 
     def process_foggy_watermark(self, folder, text="BH", **kwargs):
         print({"folder":folder,**{param: data for param, data in kwargs.items()}})
