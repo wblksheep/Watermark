@@ -25,6 +25,10 @@ class IWatermarkConfig(ABC):
 
     # @property
     # @abstractmethod
+    # def config(self):
+    #     """配置"""
+    # @property
+    # @abstractmethod
     # def npy_path(self) -> str:
     #     """水印透明度"""
 
@@ -33,16 +37,43 @@ class YamlWatermarkConfig(IWatermarkConfig):
 
     def __init__(self, config_path: Path):
         with open(config_path, "r", encoding="utf-8") as f:
-            self._config = yaml.safe_load(f)['watermark']
+            self._config = yaml.safe_load(f)
 
     @property
     def output_height(self) -> int:
-        return self._config['output_height']
+        return self._config['watermark']['output_height']
 
     @property
     def quality(self) -> int:
-        return int(self._config['quality'])
+        return int(self._config['watermark']['quality'])
 
     @property
     def opacity(self) -> float:
-        return float(self._config['opacity'])
+        return float(self._config['watermark']['opacity'])
+
+class WatermarkConfig(IWatermarkConfig):
+    """YAML配置加载器"""
+
+    def __init__(self, config_path: Path):
+        with open(config_path, "r", encoding="utf-8") as f:
+            self._config = yaml.safe_load(f)
+
+    @property
+    def output_height(self) -> int:
+        return self._config['watermark']['output_height']
+
+    @property
+    def quality(self) -> int:
+        return int(self._config['watermark']['quality'])
+
+    @property
+    def opacity(self) -> float:
+        return float(self._config['watermark']['opacity'])
+
+    @property
+    def config(self):
+        return self._config['watermark_types']
+
+    @property
+    def npy_path(self):
+        return Path(f"{self._config['watermark']['npy_path']}.npy")

@@ -34,7 +34,7 @@ class MainPresenter(QObject):
 
     def _bind_handlers(self):
         # 动态绑定配置中的处理器
-        for wm_type in self.model.config:
+        for wm_type in self.model.config.config:
             self._register_handler(wm_type)
 
     def _register_handler(self, wm_type: str):
@@ -45,14 +45,21 @@ class MainPresenter(QObject):
 
     def _create_handler(self, wm_type):
         def handler():
-            folder = self.view.get_folder_path()
-            params = self._collect_params(wm_type)
-            self.model.get_handler(wm_type)(folder, **params)
+            try:
+                folder = self.view.get_folder_path()
+                params = self._collect_params(wm_type)
+                result = self.model.get_handler(wm_type)(folder, **params)
+
+                #更新视图
+                self.view.show_info(f"已为{len(result)}个图片添加水印")
+            except Exception as e:
+                logger.exception(e)
+                self.view.show_error(f"{wm_type} 处理失败: {str(e)}")
         return handler
 
     def _collect_params(self, wm_type) -> Dict[str, Any]:
         # 合并配置默认值与用户输入
-        default_params = self.model.config[wm_type]['params']
+        default_params = self.model.config.config[wm_type]['params']
         user_params = self.view.get_watermark_params(wm_type)
         return {**default_params, **user_params}
 
@@ -86,7 +93,7 @@ class MainPresenter(QObject):
         return "default"
 
     def handle_selection(self, index):
-        handler_name = [wm_type for wm_type, _ in self.watermark_config.items()][index]
+        handler_name = [wm_type for wm_type, _ in self.watermark_config.config.items()][index]
         handler = getattr(self, f"handle_{handler_name}", self._default_handler)
         handler()
 

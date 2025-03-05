@@ -33,6 +33,9 @@ class MainWindow(IMainWindow):
     def show_error(self, message):
         QMessageBox.critical(self, "错误", message)
 
+    def show_info(self, message):
+        QMessageBox.information(self, "消息", message)
+
     def show_folder_dialog(self, default_path):
         return QFileDialog.getExistingDirectory(self, "选择文件夹", default_path)
 

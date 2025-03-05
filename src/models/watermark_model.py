@@ -20,7 +20,7 @@ class WatermarkModel:
         return self.config
 
     def get_handler(self, wm_type):
-        return getattr(self, self.config[wm_type]['handler'])
+        return getattr(self, self.config.config[wm_type]['handler'])
 
     def process_normal_watermark(self, folder,  **kwargs):
         processor = self.processor_factory.create_normal_processor()
@@ -36,7 +36,11 @@ class WatermarkModel:
         return output_dir
 
     def process_foggy_watermark(self, folder, text="BH", **kwargs):
-        print({"folder":folder,**{param: data for param, data in kwargs.items()}})
+        processor = self.processor_factory.create_normal_processor()
+        # # 执行批量处理
+        # input_dir = Path("input")
+        output_dir = self._prepare_output_dir()
+        return processor.process_batch(folder, output_dir)
 
 
 
@@ -49,14 +53,14 @@ class WatermarkModel:
     def _build_handlers(self):
 
         """动态创建带验证的处理方法"""
-        for wm_type in self.config:
-            handler_name = self.config[wm_type]['handler']
+        for wm_type in self.config.config:
+            handler_name = self.config.config[wm_type]['handler']
             original_method = getattr(self, handler_name)
 
             # 生成参数约束规则
             param_rules = {
                 param: {'type': info['type'], **info.get('validations', {})}
-                for param, info in self.config[wm_type]['params'].items()
+                for param, info in self.config.config[wm_type]['params'].items()
             }
 
             # 立即绑定当前作用域的wm_type
@@ -78,7 +82,7 @@ class WatermarkModel:
     def _sanitize_params(self, wm_type, raw_params):
         """参数清洗与验证"""
         valid_params = {}
-        for param, config in self.config[wm_type]['params'].items():
+        for param, config in self.config.config[wm_type]['params'].items():
             # 必填校验
             if config.get('required') and param not in raw_params:
                 raise ValueError(f"缺少必要参数: {param}")

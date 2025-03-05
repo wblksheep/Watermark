@@ -23,7 +23,6 @@ watermark_types:
         required: false
         options: [ jpg, png ]
         default: jpg
-
   foggy:
     display: "雾化"
     handler: "process_foggy_watermark"

@@ -19,6 +19,9 @@ class IMainWindow(QMainWindow):
     def get_opacity_input(self) -> str: pass
 
     @abstractmethod
+    def show_info(self, message: str) -> None: pass
+
+    @abstractmethod
     def show_error(self, message: str) -> None: pass
 
     @abstractmethod
