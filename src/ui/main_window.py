@@ -1,9 +1,10 @@
+from pathlib import Path
 from typing import Any, Dict
 
 from PySide6.QtWidgets import (
     QPushButton, QComboBox,
     QVBoxLayout, QWidget, QLabel, QLineEdit, QFileDialog, QMessageBox, QSpinBox,
-    QStackedWidget
+    QStackedWidget, QCheckBox
 )
 from PySide6.QtGui import QAction, QDoubleValidator
 from PySide6.QtCore import Qt, Signal
@@ -73,20 +74,25 @@ class MainWindow(IMainWindow):
 
         def create_input_widget(config, default_value):
             """根据配置类型创建对应的输入组件"""
-            input_type = config.get("type", "string")
+            input_type = config.get("input_type", "string")
 
             # 创建对应类型的输入组件
-            if input_type == "int":
+            if input_type == "QSpinBox":
                 spinbox = QSpinBox()
                 spinbox.setRange(config.get("min", 0), config.get("max", 100))
                 spinbox.setValue(int(default_value))
                 return spinbox, lambda: spinbox.value()
 
-            elif input_type == "dropdown":
+            elif input_type == "QComboBox":
                 combo = QComboBox()
                 combo.addItems([str(opt) for opt in config.get("options", [])])
                 combo.setCurrentText(str(default_value))
                 return combo, lambda: combo.currentText()
+
+            elif input_type == "QCheckBox":
+                check = QCheckBox()
+                check.setChecked(True)
+                return check, lambda: check.isChecked()
 
             elif input_type == "color":
                 color_btn = QPushButton()
@@ -207,6 +213,7 @@ class MainWindow(IMainWindow):
         # 文件夹选择
         self.folder_input = QLineEdit()
         self.folder_input.setPlaceholderText("请选择文件夹")
+        self.set_folder_path(str(Path('resources/input').resolve()))
         folder_button = QPushButton("选择文件夹")
         folder_button.clicked.connect(self._emit_folder_selected)
         layout.addWidget(self.folder_input)

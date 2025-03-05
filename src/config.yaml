@@ -17,6 +17,7 @@ watermark_types:
     params:
       default_opacity:
         label: "透明度"
+        input_type: QSpinBox
         type: int
         required: false # 新增必填标记
         min: 0
@@ -24,10 +25,18 @@ watermark_types:
         default: 75
       allowed_formats:
         label: "允许格式"
+        input_type: QComboBox
         type: list[str]
         required: false
         options: [ jpg, png ]
         default: jpg
+      enhancement:
+        label: "是否增强"
+        input_type: QLineEdit
+        type: bool
+        required: false
+        options: [true, 1, yes]
+        default: true
   foggy:
     display: "雾化"
     handler: "process_foggy_watermark"

@@ -23,12 +23,13 @@ class WatermarkModel:
         return getattr(self, self.config.config[wm_type]['handler'])
 
     def process_normal_watermark(self, folder,  **kwargs):
+        # print({'folder':folder, **kwargs})
         """根据类型处理文件"""
         processor = self.processor_factory.create_processor("normal")
         # # 执行批量处理
         # input_dir = Path("input")
         output_dir = self._prepare_output_dir()
-        return processor.process_batch(folder, output_dir)
+        return processor.process_batch(folder, output_dir, **kwargs)
         # processor = self.processor_factory.create_normal_processor()
         # # # 执行批量处理
         # # input_dir = Path("input")
@@ -113,7 +114,7 @@ class WatermarkModel:
 
                 def validate_option(item):
                     """嵌套函数用于复用校验逻辑"""
-                    if item not in config['options']:
+                    if item not in str(config['options']).lower():
                         raise ValueError(
                             f"参数 {param} 值 '{item}' 无效，允许的选项: {config['options']}"
                         )
@@ -144,6 +145,7 @@ class WatermarkModel:
             'float': float,
             'bool': lambda v: str(v).lower() in ['true', '1', 'yes'],
             'list[str]': lambda v: [s.strip() for s in str(v).split(',')]
+            # 'check'
         }
         return type_map[target_type](value)
 

@@ -6,7 +6,7 @@ import queue
 import threading
 from logging.handlers import QueueHandler, QueueListener
 from pathlib import Path
-from typing import List, Tuple, Iterable
+from typing import List, Tuple, Iterable, runtime_checkable, Protocol
 from concurrent.futures import ThreadPoolExecutor
 from collections import defaultdict
 
@@ -73,6 +73,11 @@ def timing_decorator(func):
 def _default_stats():
     return {'count':0, 'total':0.0}
 
+@runtime_checkable
+class ProcessParams(Protocol):
+    opacity: float
+    blend_mode: str
+
 class BaseWatermarkProcessor:
     """优化后的多线程水印处理器（日志增强版）"""
 
@@ -106,7 +111,7 @@ class BaseWatermarkProcessor:
             avg = stat['total'] / stat['count'] if stat['count'] else 0
             print(f"{task_type}: 平均{avg:.2f}s | 总数{stat['total']:.2f}s | 次数{stat['count']}")
 
-    def process_batch(self, input_dir: Path, output_dir: Path) -> List[Path]:
+    def process_batch(self, input_dir: Path, output_dir: Path, **kwargs) -> List[Path]:
         """添加批处理各阶段日志"""
         self._logger.info(f"开始批处理任务 | 输入目录: {input_dir} | 输出目录: {output_dir}")
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -143,7 +148,7 @@ class BaseWatermarkProcessor:
                 # 任务分发
                 task_start = time.perf_counter()
                 futures = {
-                    executor.submit(self._process_wrapper, task): task
+                    executor.submit(self._process_wrapper, task, **kwargs): task
                     for task in tasks
                 }
                 self._timings['task_distribute'] = time.perf_counter() - task_start
@@ -191,7 +196,7 @@ class BaseWatermarkProcessor:
         logger = logging.getLogger()
         logger.info(f"工作线程启动 | TID: {thread_id} | 准备就绪")
 
-    def _process_wrapper(self, task: Tuple[Path, Path]) -> Tuple[bool, Path]:
+    def _process_wrapper(self, task: Tuple[Path, Path], **kwargs) -> Tuple[bool, Path]:
         """添加详细任务日志"""
         input_path, output_path = task
         thread_name = threading.current_thread().name
@@ -202,7 +207,7 @@ class BaseWatermarkProcessor:
                 f"输入: {input_path} | 输出: {output_path}"
             )
             start_time = time.perf_counter()
-            self.process_single(input_path, output_path)
+            self.process_single(input_path, output_path, **kwargs)
             cost = time.perf_counter() - start_time
             self._task_stats['process_single']['count'] += 1
             self._task_stats['process_single']['total'] += cost
@@ -222,8 +227,15 @@ class BaseWatermarkProcessor:
             )
             return (False, output_path)
 
-    def process_single(self, input_path: Path, output_path: Path):
+    def process_single(
+            self,
+            input_path: Path,
+            output_path: Path,
+            params: ProcessParams  # 使用协议约束参数
+    ) -> None:
         """具体处理逻辑（需子类实现）"""
+        if not isinstance(params, ProcessParams):
+            raise TypeError("参数必须实现 ProcessParams 协议")
         raise NotImplementedError
 
     @property
