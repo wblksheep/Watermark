@@ -34,7 +34,7 @@ class NormalWatermarkProcessor(BaseWatermarkProcessor[NormalParams]):
             raise FileNotFoundError(f"npy文件 {npy_path} 不存在")
         return np.load(npy_path)
 
-    def _validate_params(self, output_dir: Path, params: ProcessorParams) -> NormalParams:
+    def _validate_params(self, params: ProcessorParams) -> NormalParams:
         """转换并校验雾化专用参数"""
         return NormalParams(**params.dict())
 

@@ -121,7 +121,7 @@ class BaseWatermarkProcessor(Generic[T]):
     def process_batch(self, input_dir: Path, output_dir: Path, **kwargs) -> List[Path]:
         try:
             final_params = self._validate_params(
-                ProcessorParams(
+                params = ProcessorParams(
                     **{**self.default_params, **kwargs},
                     output_dir=output_dir
                 )
