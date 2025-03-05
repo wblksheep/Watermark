@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4e3d81b3-2670-4bf5-af0b-9de420058153" name="更改" comment="界面v1.0.0">
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/interfaces/base_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/interfaces/base_processor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/interfaces/impl/normal_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/interfaces/impl/normal_processor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -303,7 +303,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/models/interfaces/impl/normal_processor.py</url>
-          <line>35</line>
+          <line>44</line>
           <option name="timeStamp" value="149" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -313,7 +313,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/models/interfaces/base_processor.py</url>
-          <line>209</line>
+          <line>212</line>
           <option name="timeStamp" value="159" />
         </line-breakpoint>
       </breakpoints>

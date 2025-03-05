@@ -6,7 +6,7 @@ import queue
 import threading
 from logging.handlers import QueueHandler, QueueListener
 from pathlib import Path
-from typing import List, Tuple, Iterable, runtime_checkable, Protocol
+from typing import List, Tuple, Iterable, runtime_checkable, Protocol, TypeVar, Generic
 from concurrent.futures import ThreadPoolExecutor
 from collections import defaultdict
 
@@ -78,7 +78,10 @@ class ProcessParams(Protocol):
     opacity: float
     blend_mode: str
 
-class BaseWatermarkProcessor:
+# 泛型参数约束
+T = TypeVar("T", bound=ProcessParams)
+
+class BaseWatermarkProcessor(Generic[T]):
     """优化后的多线程水印处理器（日志增强版）"""
 
     _SUPPORTED_EXT = {'.jpg', '.jpeg', '.png'}
@@ -228,15 +231,29 @@ class BaseWatermarkProcessor:
             return (False, output_path)
 
     def process_single(
-            self,
-            input_path: Path,
-            output_path: Path,
-            params: ProcessParams  # 使用协议约束参数
+        self,
+        input_path: Path,
+        output_path: Path,
+        params: T  # 泛型参数
     ) -> None:
         """具体处理逻辑（需子类实现）"""
-        if not isinstance(params, ProcessParams):
-            raise TypeError("参数必须实现 ProcessParams 协议")
+        self._validate_params(params)
         raise NotImplementedError
+
+    def _validate_params(self, params: T):
+        """参数校验模板方法"""
+        # 运行时校验协议实现
+        if not isinstance(params, ProcessParams):  # 依赖 @runtime_checkable
+            missing = []
+            if not hasattr(params, 'opacity'):
+                missing.append('opacity')
+            if not hasattr(params, 'blend_mode'):
+                missing.append('blend_mode')
+            raise TypeError(f"参数缺少必要属性: {missing}")
+        if not (0 <= params.opacity <= 1):
+            raise ValueError("透明度需在0-1之间")
+        if params.blend_mode not in {"multiply", "overlay"}:
+            raise ValueError("无效的混合模式")
 
     @property
     def log_system(self) -> LogSystem:
