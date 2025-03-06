@@ -27,14 +27,3 @@ class ProcessorFactory:
             config=processor_config,
             npy_path=processor_config['npy_path']
         )
-
-    # def create_normal_processor(self) -> BaseWatermarkProcessor:
-    #     return NormalWatermarkProcessor(
-    #         config=self.config,
-    #         npy_path=self.config.npy_path  # 从配置中读取路径
-    #     )
-    # def create_foggy_processor(self) -> BaseWatermarkProcessor:
-    #     return FoggyWatermarkProcessor(
-    #         config=self.config,
-    #         npy_path=self.config.npy_path  # 从配置中读取路径
-    #     )

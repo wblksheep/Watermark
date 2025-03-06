@@ -2,21 +2,30 @@ from pathlib import Path
 from typing import Any, Dict
 
 from PySide6.QtWidgets import (
-    QPushButton, QComboBox,
-    QVBoxLayout, QWidget, QLabel, QLineEdit, QFileDialog, QMessageBox, QSpinBox,
-    QStackedWidget, QCheckBox
+    QPushButton, QComboBox, QVBoxLayout, QWidget,
+    QLabel, QLineEdit, QFileDialog, QMessageBox,
+    QSpinBox, QStackedWidget, QCheckBox, QHBoxLayout,
+    QSizePolicy, QFrame
 )
-from PySide6.QtGui import QAction, QDoubleValidator
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QAction, QDoubleValidator, QIcon, QFont
+from PySide6.QtCore import Qt, Signal, QSize
 import logging
 
 from src.config import ViewParams
-from src.config_loader.config_loader import ConfigLoader
 from src.ui.interfaces import IMainWindow
+from src.ui.styles import MAIN_STYLE
 
 logger = logging.getLogger(__name__)
 
-
+class StyledButton(QPushButton):
+    """带图标的现代风格按钮"""
+    def __init__(self, text, icon_path=None):
+        super().__init__(text)
+        if icon_path:
+            self.setIcon(QIcon(icon_path))
+            self.setIconSize(QSize(20, 20))
+        self.setMinimumSize(120, 40)
+        self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
 
 class MainWindow(IMainWindow):
     # 定义信号（用于向Presenter传递事件）
@@ -28,11 +37,28 @@ class MainWindow(IMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("界面示例")
-        self.setGeometry(100, 100, 400, 300)
+        self._setup_window_properties()
+        self._init_fonts()
+        self.setStyleSheet(MAIN_STYLE)
         self.presenter: Any = None
         self.config: Dict[str, Any] = None
         # self._init_ui()
+
+    def _setup_window_properties(self):
+        """窗口初始化配置"""
+        self.setWindowTitle("水印生成系统")
+        self.setMinimumSize(600, 400)
+        # self.setWindowFlags(self.windowFlags() | Qt.WindowMinMaxButtonsHint)
+
+    def _init_fonts(self):
+        """字体初始化"""
+        self.title_font = QFont("微软雅黑", 14, QFont.Bold)
+        self.label_font = QFont("微软雅黑", 10)
+
+    def _init_fonts(self):
+        """字体初始化"""
+        self.title_font = QFont("微软雅黑", 14, QFont.Bold)
+        self.label_font = QFont("微软雅黑", 10)
 
     def show_error(self, message):
         QMessageBox.critical(self, "错误", message)
@@ -48,9 +74,6 @@ class MainWindow(IMainWindow):
 
     def get_folder_path(self):
         return self.folder_input.text()
-
-    def get_opacity_input(self):
-        return self.opacity_input.text()
 
     def initAfterInjection(self):
         self.toggle_topmost.emit(True)
@@ -102,11 +125,11 @@ class MainWindow(IMainWindow):
                 check.setChecked(True)
                 return check, lambda: check.isChecked()
 
-            elif input_type == "color":
-                color_btn = QPushButton()
-                color_btn.setStyleSheet(f"background-color: {default_value}")
-                color_btn.clicked.connect(lambda: self._pick_color(color_btn))
-                return color_btn, lambda: color_btn.palette().button().color().name()
+            # elif input_type == "color":
+            #     color_btn = QPushButton()
+            #     color_btn.setStyleSheet(f"background-color: {default_value}")
+            #     color_btn.clicked.connect(lambda: self._pick_color(color_btn))
+            #     return color_btn, lambda: color_btn.palette().button().color().name()
             else:  # 默认字符串类型
                 line_edit = QLineEdit(str(default_value))
                 if input_type == "float":
@@ -162,8 +185,18 @@ class MainWindow(IMainWindow):
         }
 
     def _create_menu_bar(self):
+        """现代风格菜单栏"""
         menu_bar = self.menuBar()
-
+        menu_bar.setStyleSheet("""
+            QMenuBar {
+                background: #F8F9FA;
+                padding: 4px;
+                border-bottom: 1px solid #DEE2E6;
+            }
+            QMenuBar::item {
+                padding: 4px 8px;
+            }
+        """)
         # 文件菜单
         file_action = QAction("文件", self)
         file_action.triggered.connect(lambda: self.menu_clicked.emit("文件"))
@@ -181,14 +214,117 @@ class MainWindow(IMainWindow):
     def _create_main_content(self):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
-        layout = QVBoxLayout()
 
-        self._create_title_label(layout)
-        self._create_watermark_selector(layout)
-        self._create_folder_selection(layout)
-        self._create_opacity_input(layout)
-        self._create_generate_button(layout)
-        central_widget.setLayout(layout)
+        # layout = QVBoxLayout()
+        # layout.setContentsMargins(20, 10, 20, 20)
+        # layout.setSpacing(15)
+
+        main_layout = QVBoxLayout()
+        main_layout.setContentsMargins(20, 10, 20, 20)
+        main_layout.setSpacing(15)
+        self._create_title_section(main_layout)
+        # self._create_config_section(main_layout)
+        # self._create_action_buttons(main_layout)
+        #
+        # central_widget.setLayout(main_layout)
+
+        self._create_title_label(main_layout)
+        self._create_watermark_selector(main_layout)
+        self._create_folder_selection(main_layout)
+        self._create_generate_button(main_layout)
+        central_widget.setLayout(main_layout)
+
+    def _create_title_section(self, layout):
+        """标题区域"""
+        title_label = QLabel("水印生成系统")
+        title_label.setFont(self.title_font)
+        title_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(title_label)
+
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
+        line.setFrameShadow(QFrame.Sunken)
+        layout.addWidget(line)
+
+    def _create_config_section(self, layout):
+        """配置区域容器"""
+        config_container = QWidget()
+        config_layout = QVBoxLayout()
+        config_layout.setSpacing(12)
+
+        self._create_watermark_selector(config_layout)
+        self._create_folder_selector(config_layout)
+        self._create_param_stack(config_layout)
+
+        config_container.setLayout(config_layout)
+        layout.addWidget(config_container)
+
+    def _create_watermark_selector(self, layout):
+        """水印类型选择器"""
+        selector_layout = QHBoxLayout()
+
+        type_label = QLabel("水印类型:")
+        type_label.setFont(self.label_font)
+        selector_layout.addWidget(type_label)
+
+        self.combo = QComboBox()
+        self.combo.setFixedHeight(32)
+        selector_layout.addWidget(self.combo, 3)
+
+        layout.addLayout(selector_layout)
+
+    def _create_folder_selector(self, layout):
+        """现代风格文件夹选择器"""
+        folder_container = QWidget()
+        folder_layout = QHBoxLayout()
+        folder_layout.setContentsMargins(0, 0, 0, 0)
+
+        self.folder_input = QLineEdit()
+        self.folder_input.setPlaceholderText("点击右侧按钮选择输入文件夹...")
+        self.folder_input.setReadOnly(True)
+        folder_layout.addWidget(self.folder_input)
+
+        folder_btn = StyledButton("", "assets/folder_icon.png")
+        folder_btn.setToolTip("选择文件夹")
+        folder_btn.clicked.connect(self._emit_folder_selected)
+        folder_layout.addWidget(folder_btn)
+
+        folder_container.setLayout(folder_layout)
+        layout.addWidget(folder_container)
+
+    def _create_param_stack(self, layout):
+        """参数堆叠布局优化"""
+        self.param_stack = QStackedWidget()
+        self.param_stack.setStyleSheet("""
+            QStackedWidget {
+                background: #FFFFFF;
+                border-radius: 6px;
+                padding: 12px;
+                border: 1px solid #CED4DA;
+            }
+        """)
+
+        # 参数面板初始化保持不变...
+        layout.addWidget(self.param_stack)
+
+    def _create_action_buttons(self, layout):
+        """操作按钮区域"""
+        btn_container = QWidget()
+        btn_layout = QHBoxLayout()
+        btn_layout.setContentsMargins(0, 10, 0, 0)
+
+        self.generate_btn = StyledButton("开始生成", "assets/start_icon.png")
+        self.generate_btn.clicked.connect(lambda: self.generate_triggered.emit(
+            self.combo.currentIndex()
+        ))
+        btn_layout.addWidget(self.generate_btn)
+
+        btn_container.setLayout(btn_layout)
+        layout.addWidget(btn_container)
+
+
+
+
 
     def _create_title_label(self, layout):
         label = QLabel("界面示例")
@@ -198,8 +334,6 @@ class MainWindow(IMainWindow):
     def _create_watermark_selector(self, layout):
         self.combo = QComboBox()
         self.param_stack = QStackedWidget()  # 新增堆叠容器
-
-        # for wm_type, data in self.config.items():
 
         self.params_inputs = {
             wm_type: self._create_param_inputs(data['params'])
@@ -227,11 +361,6 @@ class MainWindow(IMainWindow):
         layout.addWidget(self.folder_input)
         layout.addWidget(folder_button)
 
-    def _create_opacity_input(self, layout):
-        # 不透明度输入
-        self.opacity_input = QLineEdit()
-        self.opacity_input.setPlaceholderText("请输入不透明度，默认50%")
-        layout.addWidget(self.opacity_input)
 
     def _create_generate_button(self, layout):
         # 生成按钮

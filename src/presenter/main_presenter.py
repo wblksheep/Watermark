@@ -24,12 +24,12 @@ class MainPresenter(QObject):
         self.model = model
         self._handler_map = {}
         self._connect_signals()
-        self.view.set_presenter(self)  # 关键：反向设置
+        self.view.set_presenter(self)
         self.view.set_view_config(self._config.view_params)
         self.view.initAfterInjection()
         self.model.dependency_inject_after_init(self._config.model_params)
         # 延迟加载大配置项
-        self._watermark_config = None  # Model 封装配置加载
+        self._watermark_config = None
         self._bind_handlers()
 
     @property
@@ -77,59 +77,24 @@ class MainPresenter(QObject):
     def on_menu_click(self, item):
         print(f"点击了菜单项: {item}")
 
-
-
     def handle_folder_selection(self):
         selected_path = self.view.show_folder_dialog("resources/input")
         if selected_path:
-
             # 通过接口更新视图
             self.view.set_folder_path(selected_path)
-
-
 
     def toggle_window_topmost(self, is_topmost):
         # 将具体 flag 操作移至 View
         self.view.set_window_topmost(is_topmost)
         self.view.update_topmost_status(is_topmost)
 
-    def _get_watermark_type(self, index):
-        if 0 <= index < len(self._watermark_config):
-            return self._watermark_config[index]["value"]
-        return "default"
 
     def handle_selection(self, index):
         handler_name = [wm_type for wm_type, _ in self.model.config.watermark_types.items()][index]
         handler = getattr(self, f"handle_{handler_name}", self._default_handler)
         handler()
 
-
-    def handle_foggy_watermark(self):
-        print("执行雾化水印逻辑...")
-
     def _default_handler(self):
         print("未知选项，使用默认处理")
 
-    @lru_cache(maxsize=32)
-    def _parse_opacity(self, raw_value: str) -> int:
-        return int(raw_value) if raw_value.isdigit() else 50
-
-    def handle_generate(self, index, watermark_type):
-        folder = self.view.folder_input.text()
-        opacity = self._parse_opacity(self.view.opacity_input.text())
-        try:
-            self._validate_opacity(int(opacity))
-        except ValueError as e:
-            self.view.show_error(str(e))
-            logger.error(e)
-            return
-
-
-        for filename in self.model.process_files(folder, watermark_type, opacity):
-            print(f"已处理: {filename}")  # 可替换为界面状态更新
-
-    def _validate_opacity(self, value: int):
-        if not 0 <= value <= 100:
-            raise ValueError("不透明度需在0-100之间")
-        return value
 
