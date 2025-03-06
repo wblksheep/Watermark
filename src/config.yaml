@@ -15,7 +15,7 @@ watermark_types:
     handler: "process_normal_watermark"
     npy_path: "watermark_normal_450"
     params:
-      default_opacity:
+      opacity:
         label: "透明度"
         input_type: QSpinBox
         type: int
@@ -32,7 +32,7 @@ watermark_types:
         default: jpg
       enhancement:
         label: "是否增强"
-        input_type: QLineEdit
+        input_type: QCheckBox
         type: bool
         required: false
         options: [true, 1, yes]

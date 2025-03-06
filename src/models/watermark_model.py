@@ -27,7 +27,7 @@ class WatermarkModel:
     def process_normal_watermark(self, folder,  **kwargs):
         processor = self.processor_factory.create_processor("normal")
         output_dir = self._prepare_output_dir()
-        processor.process_batch(folder, output_dir, **kwargs)
+        return processor.process_batch(folder, output_dir, **kwargs)
         # # print({'folder':folder, **kwargs})
         # """根据类型处理文件"""
         # processor = self.processor_factory.create_processor("normal")

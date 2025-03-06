@@ -128,7 +128,7 @@ class BaseWatermarkProcessor(Generic[T]):
             )
         except ValidationError as e:
             self.logger.exception(e)
-            # raise ValueError(f"参数校验失败: {e.errors()}")
+            raise ValueError(f"参数校验失败: {e.errors()}")
         """添加批处理各阶段日志"""
         self._logger.info(f"开始批处理任务 | 输入目录: {input_dir} | 输出目录: {output_dir}")
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -165,7 +165,7 @@ class BaseWatermarkProcessor(Generic[T]):
                 # 任务分发
                 task_start = time.perf_counter()
                 futures = {
-                    executor.submit(self._process_wrapper, task, **kwargs): task
+                    executor.submit(self._process_wrapper, task, final_params): task
                     for task in tasks
                 }
                 self._timings['task_distribute'] = time.perf_counter() - task_start
@@ -213,7 +213,7 @@ class BaseWatermarkProcessor(Generic[T]):
         logger = logging.getLogger()
         logger.info(f"工作线程启动 | TID: {thread_id} | 准备就绪")
 
-    def _process_wrapper(self, task: Tuple[Path, Path], **kwargs) -> Tuple[bool, Path]:
+    def _process_wrapper(self, task: Tuple[Path, Path], kwargs: ProcessorParams) -> Tuple[bool, Path]:
         """添加详细任务日志"""
         input_path, output_path = task
         thread_name = threading.current_thread().name
@@ -224,7 +224,7 @@ class BaseWatermarkProcessor(Generic[T]):
                 f"输入: {input_path} | 输出: {output_path}"
             )
             start_time = time.perf_counter()
-            self.process_single(input_path, output_path, **kwargs)
+            self.process_single(input_path, output_path, kwargs)
             cost = time.perf_counter() - start_time
             self._task_stats['process_single']['count'] += 1
             self._task_stats['process_single']['total'] += cost
