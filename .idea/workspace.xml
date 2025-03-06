@@ -5,8 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4e3d81b3-2670-4bf5-af0b-9de420058153" name="更改" comment="界面v1.0.0">
-      <change afterPath="$PROJECT_DIR$/src/main_test_files/load_basemodel_from_yaml/xtest_pathparams/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main_test_files/load_basemodel_from_yaml/xtest_pathparams/test_params.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main_test_files/basemodel_test_in_global_config/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -77,6 +76,7 @@
     "Python.main (1).executor": "Debug",
     "Python.main (2).executor": "Run",
     "Python.main (3).executor": "Run",
+    "Python.main (4).executor": "Run",
     "Python.main.executor": "Run",
     "Python.serialization.executor": "Run",
     "Python.watermark_model.executor": "Run",
@@ -120,7 +120,7 @@
       <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\notes" />
     </key>
   </component>
-  <component name="RunManager" selected="Python 测试.Python 测试 (main.py 内)">
+  <component name="RunManager" selected="Python.main (4)">
     <configuration name="main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Watermark" />
       <option name="ENV_FILES" value="" />
@@ -190,7 +190,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="main (4)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Watermark" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -199,12 +199,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/models" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/main_test_files/basemodel_test_in_global_config" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/models/main.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/main_test_files/basemodel_test_in_global_config/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -231,18 +231,18 @@
     </configuration>
     <list>
       <item itemvalue="Python.main (3)" />
+      <item itemvalue="Python.main (4)" />
       <item itemvalue="Python.main (2)" />
       <item itemvalue="Python.main (1)" />
-      <item itemvalue="Python.main" />
       <item itemvalue="Python 测试.Python 测试 (main.py 内)" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main (4)" />
         <item itemvalue="Python 测试.Python 测试 (main.py 内)" />
         <item itemvalue="Python.main (3)" />
         <item itemvalue="Python.main (2)" />
         <item itemvalue="Python.main (1)" />
-        <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
   </component>
@@ -407,6 +407,11 @@
           <line>30</line>
           <option name="timeStamp" value="180" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/main_test_files/basemodel_test_in_global_config/main.py</url>
+          <line>155</line>
+          <option name="timeStamp" value="181" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
@@ -419,6 +424,7 @@
     <SUITE FILE_PATH="coverage/Watermark$base_processor.coverage" NAME="base_processor 覆盖结果" MODIFIED="1741079618710" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/models/interfaces" />
     <SUITE FILE_PATH="coverage/Watermark$.coverage" NAME=" 覆盖结果" MODIFIED="1741242813786" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/main_test_files/load_basemodel_from_yaml/test_pathparams" />
     <SUITE FILE_PATH="coverage/PythonProject$main__2_.coverage" NAME="main (2) 覆盖结果" MODIFIED="1740468360283" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ttt" />
+    <SUITE FILE_PATH="coverage/Watermark$main__4_.coverage" NAME="main (4) 覆盖结果" MODIFIED="1741243982137" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/main_test_files/basemodel_test_in_global_config" />
     <SUITE FILE_PATH="coverage/PythonProject$main__1_.coverage" NAME="main (1) 覆盖结果" MODIFIED="1740817489334" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/models" />
     <SUITE FILE_PATH="coverage/Watermark$main.coverage" NAME="main 覆盖结果" MODIFIED="1741138805733" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/models" />
     <SUITE FILE_PATH="coverage/Watermark$main__3_.coverage" NAME="main (3) 覆盖结果" MODIFIED="1741241147144" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/main_test_files/load_basemodel_from_yaml" />
