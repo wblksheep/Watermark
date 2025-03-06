@@ -1,34 +1,86 @@
-watermark_types:
+view_params:
   normal:
     display: "正常"
     handler: "process_normal_watermark"
-    npy_path: "watermark_image_450"
+    npy_path: "watermark_normal_450"
     params:
-      default_opacity:
-        label: "默认透明度" # 增加标签配置
-        default: 75 # 参数默认值
-        type: "int"
-      allowed_formats:
-        label: "允许格式"
-        default: jpg
-        options: [jpg, png]
-        type: "dropdown"
-#      size:
-#        min: 1500
-#        max: 2000
-#        default: 50
-#      color:
-#        type: "color"
-#        "options": ["red", "blue"]
-#        "default": "red"
-  foggy:
-    display: "雾化"
-    handler: "process_foggy_watermark"
-    npy_path: ""
-    params:
-      default_font:
-        label: "默认字体"
-        default: "Arial"
-      max_length:
-        label: "最大长度"
-        default: 100
+      opacity:
+        label: "透明度"
+        input_type: QSpinBox
+        type: int
+        required: false # 新增必填标记
+        min: 0
+        max: 100
+        default: 75
+      #      allowed_formats:
+      #        label: "允许格式"
+      #        input_type: QComboBox
+      #        type: list[str]
+      #        required: false
+      #        options: [ jpg, png ]
+      #        default: jpg
+      enhancement:
+        label: "是否增强"
+        input_type: QCheckBox
+        type: bool
+        required: false
+        options: [ true, 1, yes ]
+        default: true
+    foggy:
+      display: "雾化"
+      handler: "process_foggy_watermark"
+      params:
+        default_font:
+          label: "默认字体"
+          type: str
+          required: false
+          default: "Arial"
+
+#watermark:
+#  normal:
+#    opacity: 50
+#    npy_path: "watermark_normal_200"  # 不同水印类型独立配置
+#    output_height: 1000
+#    quality: 30
+#  foggy:
+#    opacity: 50
+#    npy_path: "watermark_foggy_200"  # 不同水印类型独立配置
+#    output_height: 1000
+#    quality: 30
+#watermark_types:
+#  normal:
+#    display: "正常"
+#    handler: "process_normal_watermark"
+#    npy_path: "watermark_normal_450"
+#    params:
+#      opacity:
+#        label: "透明度"
+#        input_type: QSpinBox
+#        type: int
+#        required: false # 新增必填标记
+#        min: 0
+#        max: 100
+#        default: 75
+##      allowed_formats:
+##        label: "允许格式"
+##        input_type: QComboBox
+##        type: list[str]
+##        required: false
+##        options: [ jpg, png ]
+##        default: jpg
+#      enhancement:
+#        label: "是否增强"
+#        input_type: QCheckBox
+#        type: bool
+#        required: false
+#        options: [true, 1, yes]
+#        default: true
+#  foggy:
+#    display: "雾化"
+#    handler: "process_foggy_watermark"
+#    params:
+#      default_font:
+#        label: "默认字体"
+#        type: str
+#        required: false
+#        default: "Arial"

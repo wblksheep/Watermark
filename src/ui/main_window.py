@@ -8,11 +8,14 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QAction, QDoubleValidator
 from PySide6.QtCore import Qt, Signal
-from src.config import ConfigLoader
 import logging
+
+from src.config import ViewParams
+from src.config_loader.config_loader import ConfigLoader
+from src.ui.interfaces import IMainWindow
+
 logger = logging.getLogger(__name__)
 
-from ui.interfaces import IMainWindow
 
 
 class MainWindow(IMainWindow):
@@ -28,8 +31,8 @@ class MainWindow(IMainWindow):
         self.setWindowTitle("界面示例")
         self.setGeometry(100, 100, 400, 300)
         self.presenter: Any = None
-        self.config: Dict[str, Any] = ConfigLoader.load_watermark_config()
-        self._init_ui()
+        self.config: Dict[str, Any] = None
+        # self._init_ui()
 
     def show_error(self, message):
         QMessageBox.critical(self, "错误", message)
@@ -48,6 +51,7 @@ class MainWindow(IMainWindow):
 
     def get_opacity_input(self):
         return self.opacity_input.text()
+
     def initAfterInjection(self):
         self.toggle_topmost.emit(True)
 
@@ -61,6 +65,10 @@ class MainWindow(IMainWindow):
 
     def set_presenter(self, presenter):
         self.presenter = presenter
+
+    def set_view_config(self, view_config: ViewParams):
+        self.config = view_config
+        self._init_ui()
 
     def _init_ui(self):
 
@@ -150,7 +158,7 @@ class MainWindow(IMainWindow):
     def get_watermark_params(self, wm_type):
         return {
             param: self.get_param_values(self.params_inputs[wm_type])[param]
-            for param in self.config[wm_type]['params']
+            for param in self.config.watermark_types[wm_type]['params']
         }
 
     def _create_menu_bar(self):
@@ -195,9 +203,9 @@ class MainWindow(IMainWindow):
 
         self.params_inputs = {
             wm_type: self._create_param_inputs(data['params'])
-            for wm_type, data in self.config.items()
+            for wm_type, data in self.config.watermark_types.items()
         }
-        for wm_type, data in self.config.items():
+        for wm_type, data in self.config.watermark_types.items():
             self.combo.addItem(data['display'], wm_type)
             # 为每种类型创建参数面板并添加到堆叠容器
             param_panel = self.params_inputs[wm_type]
