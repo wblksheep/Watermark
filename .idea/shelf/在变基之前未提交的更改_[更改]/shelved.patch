@@ -1,0 +1,231 @@
+Index: src/models/interfaces/base_processor.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import logging\r\nimport os\r\nimport time\r\nimport queue\r\nimport threading\r\nfrom logging.handlers import QueueHandler, QueueListener\r\nfrom pathlib import Path\r\nfrom typing import List, Tuple, Iterable\r\nfrom concurrent.futures import ThreadPoolExecutor\r\nfrom collections import defaultdict\r\n\r\n# 线程安全的日志系统\r\nclass LogSystem:\r\n    _instance = None\r\n    _lock = threading.Lock()\r\n\r\n    def __new__(cls):\r\n        with cls._lock:\r\n            if not cls._instance:\r\n                cls._instance = super().__new__(cls)\r\n                cls._setup()\r\n        return cls._instance\r\n\r\n    @classmethod\r\n    def _setup(cls):\r\n        \"\"\"线程安全的日志系统初始化\"\"\"\r\n        cls.log_queue = queue.Queue(-1)  # 无界队列\r\n\r\n        # 日志处理器配置\r\n        file_handler = logging.FileHandler(\"watermark.log\")\r\n        stream_handler = logging.StreamHandler()\r\n        formatter = logging.Formatter(\r\n            \"%(asctime)s - %(threadName)s - [%(levelname)s] - %(message)s\"\r\n        )\r\n        file_handler.setFormatter(formatter)\r\n        stream_handler.setFormatter(formatter)\r\n\r\n        # 启动后台日志监听线程\r\n        cls.listener = QueueListener(\r\n            cls.log_queue,\r\n            file_handler,\r\n            stream_handler,\r\n            respect_handler_level=True\r\n        )\r\n        cls.listener.start()\r\n\r\n    def shutdown(self):\r\n        \"\"\"安全关闭日志系统\"\"\"\r\n        self.listener.stop()\r\n        while not self.log_queue.empty():\r\n            time.sleep(0.1)  # 等待队列处理完成\r\n\r\ndef timing_decorator(func):\r\n    def wrapper(*args, **kwargs):\r\n        start = time.perf_counter()\r\n        result = func(*args, **kwargs)\r\n        duration = time.perf_counter() - start\r\n        return (duration, result)\r\n    return wrapper\r\n\r\ndef _default_stats():\r\n    return {'count':0, 'total':0.0}\r\n\r\nclass BaseWatermarkProcessor:\r\n    \"\"\"优化后的多线程水印处理器\"\"\"\r\n\r\n    _SUPPORTED_EXT = {'.jpg', '.jpeg', '.png'}\r\n\r\n    def __init__(self, config):\r\n        self._config = config\r\n        self._timings = defaultdict(float)\r\n        self._task_stats = defaultdict(_default_stats)\r\n        self._log_system = LogSystem()\r\n        self._log_queue = self._log_system.log_queue\r\n        self._init_logger()\r\n\r\n    def _init_logger(self):\r\n        \"\"\"初始化线程安全日志\"\"\"\r\n        self._logger = logging.getLogger(self.__class__.__name__)\r\n        self._logger.addHandler(QueueHandler(self._log_queue))\r\n        self._logger.setLevel(logging.INFO)\r\n\r\n    def _print_stats(self):\r\n        \"\"\"打印详细的耗时统计\"\"\"\r\n        print(\"\\n======== 性能分析报告 ========\")\r\n        print(f\"[线程池初始化] {self._timings['pool_init']:.2f}s\")\r\n        print(f\"[任务分发] {self._timings['task_distribute']:.2f}s\")\r\n        print(f\"[结果收集] {self._timings['result_collect']:.2f}s\")\r\n        print(f\"[总耗时] {self._timings['total']:.2f}s\\n\")\r\n\r\n        print(\"=== 任务处理统计 ===\")\r\n        for task_type, stat in self._task_stats.items():\r\n            avg = stat['total'] / stat['count'] if stat['count'] else 0\r\n            print(f\"{task_type}: 平均{avg:.2f}s | 总数{stat['total']:.2f}s | 次数{stat['count']}\")\r\n\r\n    def process_batch(self, input_dir: Path, output_dir: Path) -> List[Path]:\r\n        \"\"\"优化的批量处理方法\"\"\"\r\n        output_dir.mkdir(parents=True, exist_ok=True)\r\n\r\n        tasks = list(self._generate_tasks(input_dir, output_dir))\r\n        if not tasks:\r\n            self._logger.warning(\"未发现可处理文件\")\r\n            return []\r\n\r\n        try:\r\n            total_start = time.perf_counter()\r\n\r\n            # 使用线程池替代进程池\r\n            with ThreadPoolExecutor(\r\n                max_workers=min(os.cpu_count() or 4, len(tasks)),\r\n                initializer=self._init_worker\r\n            ) as executor:\r\n                # 计时开始\r\n                self._timings['pool_init'] = time.perf_counter() - total_start\r\n\r\n                # 任务分发\r\n                task_start = time.perf_counter()\r\n                futures = {\r\n                    executor.submit(self._process_wrapper, task): task\r\n                    for task in tasks\r\n                }\r\n                self._timings['task_distribute'] = time.perf_counter() - task_start\r\n\r\n                # 结果收集\r\n                collect_start = time.perf_counter()\r\n                results = []\r\n                for future in futures:\r\n                    try:\r\n                        success, output_path = future.result()\r\n                        if success:\r\n                            results.append(output_path)\r\n                    except Exception as e:\r\n                        self._logger.error(f\"任务失败: {e}\", exc_info=True)\r\n                self._timings['result_collect'] = time.perf_counter() - collect_start\r\n\r\n                return results\r\n        finally:\r\n            self._timings['total'] = time.perf_counter() - total_start\r\n            self._print_stats()\r\n            self._log_system.shutdown()\r\n\r\n    def _generate_tasks(self, input_dir: Path, output_dir: Path) -> Iterable[Tuple[Path, Path]]:\r\n        \"\"\"任务生成器\"\"\"\r\n        for entry in os.scandir(input_dir):\r\n            if entry.is_file() and Path(entry).suffix.lower() in self._SUPPORTED_EXT:\r\n                yield (Path(entry.path), output_dir / entry.name)\r\n\r\n    @staticmethod\r\n    def _init_worker():\r\n        \"\"\"工作线程初始化\"\"\"\r\n        logger = logging.getLogger()\r\n        logger.addHandler(QueueHandler(LogSystem().log_queue))\r\n        logger.setLevel(logging.INFO)\r\n\r\n    def _process_wrapper(self, task: Tuple[Path, Path]) -> Tuple[bool, Path]:\r\n        \"\"\"异常处理包装器\"\"\"\r\n        try:\r\n            start_time = time.perf_counter()\r\n\r\n            # 实际处理逻辑\r\n            self.process_single(task[0], task[1])\r\n\r\n            cost = time.perf_counter() - start_time\r\n            self._task_stats['process_single']['count'] += 1\r\n            self._task_stats['process_single']['total'] += cost\r\n\r\n            return (True, task)\r\n        except Exception as e:\r\n            self._logger.error(f\"处理失败: {task} - {str(e)}\", exc_info=True)\r\n            return (False, task)\r\n\r\n    def process_single(self, input_path: Path, output_path: Path):\r\n        \"\"\"具体处理逻辑（需子类实现）\"\"\"\r\n        raise NotImplementedError\r\n\r\n    @property\r\n    def logger(self) -> logging.Logger:\r\n        return self._logger\r\n\r\n    @property\r\n    def config(self):\r\n        return self._config
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/models/interfaces/base_processor.py b/src/models/interfaces/base_processor.py
+--- a/src/models/interfaces/base_processor.py	(revision 859b51b374e1e442b47c9d224f7ffeef507aeaf2)
++++ b/src/models/interfaces/base_processor.py	(date 1741078389269)
+@@ -30,7 +30,8 @@
+         file_handler = logging.FileHandler("watermark.log")
+         stream_handler = logging.StreamHandler()
+         formatter = logging.Formatter(
+-            "%(asctime)s - %(threadName)s - [%(levelname)s] - %(message)s"
++            "%(asctime)s.%(msecs)03d - %(threadName)-18s - [%(levelname)s] - %(message)s",
++            datefmt="%Y-%m-%d %H:%M:%S"
+         )
+         file_handler.setFormatter(formatter)
+         stream_handler.setFormatter(formatter)
+@@ -62,7 +63,7 @@
+     return {'count':0, 'total':0.0}
+ 
+ class BaseWatermarkProcessor:
+-    """优化后的多线程水印处理器"""
++    """优化后的多线程水印处理器（日志增强版）"""
+ 
+     _SUPPORTED_EXT = {'.jpg', '.jpeg', '.png'}
+ 
+@@ -75,10 +76,11 @@
+         self._init_logger()
+ 
+     def _init_logger(self):
+-        """初始化线程安全日志"""
+-        self._logger = logging.getLogger(self.__class__.__name__)
++        """增强日志初始化"""
++        self._logger = logging.getLogger(f"{self.__class__.__name__}.{id(self)}")
+         self._logger.addHandler(QueueHandler(self._log_queue))
+         self._logger.setLevel(logging.INFO)
++        self._logger.propagate = False  # 避免重复记录
+ 
+     def _print_stats(self):
+         """打印详细的耗时统计"""
+@@ -94,24 +96,36 @@
+             print(f"{task_type}: 平均{avg:.2f}s | 总数{stat['total']:.2f}s | 次数{stat['count']}")
+ 
+     def process_batch(self, input_dir: Path, output_dir: Path) -> List[Path]:
++        """添加批处理各阶段日志"""
++        self._logger.info(f"🟢 开始批处理任务 | 输入目录: {input_dir} | 输出目录: {output_dir}")
++
+         """优化的批量处理方法"""
+         output_dir.mkdir(parents=True, exist_ok=True)
+ 
+-        tasks = list(self._generate_tasks(input_dir, output_dir))
+-        if not tasks:
+-            self._logger.warning("未发现可处理文件")
+-            return []
+-
+-        try:
+-            total_start = time.perf_counter()
+-
++        try:
++            # 生成任务阶段日志
++            task_start = time.perf_counter()
++            tasks = list(self._generate_tasks(input_dir, output_dir))
++            gen_time = time.perf_counter() - task_start
++            self._logger.info(
++                f"📂 扫描到 {len(tasks)} 个待处理文件 | "
++                f"耗时: {gen_time:.2f}s | "
++                f"跳过文件: {self._scan_skipped} 个"
++            )
++            # 线程池配置日志
++            max_workers = min(os.cpu_count() or 4, len(tasks))
++            self._logger.info(
++                f"🛠️ 初始化线程池 | 最大工作线程: {max_workers} | "
++                f"总任务数: {len(tasks)} | "
++                f"预计并发度: {min(max_workers, len(tasks))}"
++            )
+             # 使用线程池替代进程池
+             with ThreadPoolExecutor(
+                 max_workers=min(os.cpu_count() or 4, len(tasks)),
+                 initializer=self._init_worker
+             ) as executor:
+                 # 计时开始
+-                self._timings['pool_init'] = time.perf_counter() - total_start
++                self._timings['pool_init'] = time.perf_counter() - task_start
+ 
+                 # 任务分发
+                 task_start = time.perf_counter()
+@@ -135,39 +149,72 @@
+ 
+                 return results
+         finally:
+-            self._timings['total'] = time.perf_counter() - total_start
++            # 添加任务总结日志
++            success_rate = len(results) / len(tasks) if tasks else 0
++            self._logger.info(
++                f"🔚 任务完成总结 | 成功率: {success_rate:.1%} | "
++                f"成功: {len(results)} | 失败: {len(tasks) - len(results)}"
++            )
++            self._timings['total'] = time.perf_counter() - task_start
+             self._print_stats()
+             self._log_system.shutdown()
+ 
+     def _generate_tasks(self, input_dir: Path, output_dir: Path) -> Iterable[Tuple[Path, Path]]:
++        """添加任务生成日志"""
++        self._scan_skipped = 0
+         """任务生成器"""
+         for entry in os.scandir(input_dir):
+-            if entry.is_file() and Path(entry).suffix.lower() in self._SUPPORTED_EXT:
+-                yield (Path(entry.path), output_dir / entry.name)
++            src_path = Path(entry.path)
++            if entry.is_file() and src_path.suffix.lower() in self._SUPPORTED_EXT:
++                dest_path = output_dir / entry.name
++                self._logger.debug(f"✅ 添加处理任务: {src_path} → {dest_path}")
++                yield (src_path, dest_path)
++            else:
++                self._scan_skipped += 1
++                self._logger.debug(f"⏩ 跳过非支持文件: {src_path}")
+ 
+     @staticmethod
+     def _init_worker():
+-        """工作线程初始化"""
++        """增强工作线程日志"""
++        thread_id = threading.get_ident()
+         logger = logging.getLogger()
+-        logger.addHandler(QueueHandler(LogSystem().log_queue))
+-        logger.setLevel(logging.INFO)
++        logger.info(f"🧵 工作线程启动 | TID: {thread_id} | 准备就绪")
+ 
+     def _process_wrapper(self, task: Tuple[Path, Path]) -> Tuple[bool, Path]:
+         """异常处理包装器"""
++        """添加详细任务日志"""
++        input_path, output_path = task
++        thread_name = threading.current_thread().name
++
+         try:
++            # 任务开始日志
++            self._logger.info(
++                f"⏳ 开始处理文件 | 线程: {thread_name} | "
++                f"输入: {input_path} | 输出: {output_path}"
++            )
++            # 记录处理过程
+             start_time = time.perf_counter()
+-
+-            # 实际处理逻辑
+-            self.process_single(task[0], task[1])
+-
++            self.process_single(input_path, output_path)
+             cost = time.perf_counter() - start_time
++
++            # 成功日志
++            self._logger.info(
++                f"✅ 处理成功 | 线程: {thread_name} | "
++                f"耗时: {cost:.2f}s | 输出文件: {output_path}"
++            )
+             self._task_stats['process_single']['count'] += 1
+             self._task_stats['process_single']['total'] += cost
+ 
+-            return (True, task)
++            return (True, output_path)
+         except Exception as e:
+-            self._logger.error(f"处理失败: {task} - {str(e)}", exc_info=True)
+-            return (False, task)
++            # 失败日志（包含异常类型）
++            error_type = type(e).__name__
++            self._logger.error(
++                f"❌ 处理失败 | 线程: {thread_name} | "
++                f"文件: {input_path} | 错误类型: {error_type} | 详情: {str(e)}",
++                exc_info=True
++            )
++            return (True, output_path)
+ 
+     def process_single(self, input_path: Path, output_path: Path):
+         """具体处理逻辑（需子类实现）"""
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"4e3d81b3-2670-4bf5-af0b-9de420058153\" name=\"更改\" comment=\"界面v1.0.0\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/container/container.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/container/container.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/models/interfaces/base_processor.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/models/interfaces/base_processor.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/models/interfaces/impl/normal_processor.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/models/interfaces/impl/normal_processor.py\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"FlaskConsoleOptions\" custom-start-script=\"import sys; print('Python %s on %s' % (sys.version, sys.platform)); sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo, NoAppException&#10;for module in [&quot;main.py&quot;, &quot;wsgi.py&quot;, &quot;app.py&quot;]:&#10;    try: locals().update(ScriptInfo(app_import_path=module, create_app=None).load_app().make_shell_context()); print(&quot;\\nFlask App: %s&quot; % app.import_name); break&#10;    except NoAppException: pass\">\r\n    <envs>\r\n      <env key=\"FLASK_APP\" value=\"app\" />\r\n    </envs>\r\n    <option name=\"myCustomStartScript\" value=\"import sys; print('Python %s on %s' % (sys.version, sys.platform)); sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo, NoAppException&#10;for module in [&quot;main.py&quot;, &quot;wsgi.py&quot;, &quot;app.py&quot;]:&#10;    try: locals().update(ScriptInfo(app_import_path=module, create_app=None).load_app().make_shell_context()); print(&quot;\\nFlask App: %s&quot; % app.import_name); break&#10;    except NoAppException: pass\" />\r\n    <option name=\"myEnvs\">\r\n      <map>\r\n        <entry key=\"FLASK_APP\" value=\"app\" />\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"docs\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n    <option name=\"RESET_MODE\" value=\"HARD\" />\r\n  </component>\r\n  <component name=\"HighlightingSettingsPerFile\">\r\n    <setting file=\"file://$USER_HOME$/.conda/envs/haiyin/Lib/site-packages/PIL/Image.py\" root0=\"SKIP_INSPECTION\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 2\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2tWUAYd8WdqwZeMiFCvmfXOrJSl\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"openDirectoriesWithSingleClick\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n    <option name=\"showMembers\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"Python tests.Python tests for test_serialization.test_worker_init.executor\": \"Run\",\r\n    \"Python tests.Python tests in test_serialization.py.executor\": \"Run\",\r\n    \"Python.basic.executor\": \"Run\",\r\n    \"Python.basic2.executor\": \"Debug\",\r\n    \"Python.main (1).executor\": \"Run\",\r\n    \"Python.main (2).executor\": \"Run\",\r\n    \"Python.main.executor\": \"Run\",\r\n    \"Python.serialization.executor\": \"Run\",\r\n    \"Python.watermark_model.executor\": \"Run\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"RunOnceActivity.git.unshallow\": \"true\",\r\n    \"deletionFromPopupRequiresConfirmation\": \"false\",\r\n    \"git-widget-placeholder\": \"feat/multi-threading\",\r\n    \"last_opened_file_path\": \"C:/Users/Design-10/.conda/envs/haiyin_python313/python.exe\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"settings.editor.selected.configurable\": \"com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable\",\r\n    \"settings.editor.splitter.proportion\": \"0.36302295\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"PyConsoleOptionsProvider\">\r\n    <option name=\"myPythonConsoleState\">\r\n      <console-settings module-name=\"PythonProject\" is-module-sdk=\"true\">\r\n        <option name=\"myUseModuleSdk\" value=\"true\" />\r\n        <option name=\"myModuleName\" value=\"PythonProject\" />\r\n      </console-settings>\r\n    </option>\r\n  </component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"CopyFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\Design-10\\PycharmProjects\\PythonProject\\src\\utils\" />\r\n      <recent name=\"C:\\Users\\Design-10\\PycharmProjects\\PythonProject\\src\\models\" />\r\n      <recent name=\"C:\\Users\\Design-10\\PycharmProjects\\PythonProject\\notes\\old_notes\\Untitled-20 Model层水印添加\\Untitled-20-4 Model调用接口问题\" />\r\n      <recent name=\"C:\\Users\\Design-10\\PycharmProjects\\PythonProject\\notes\\old_notes\" />\r\n      <recent name=\"C:\\Users\\Design-10\\PycharmProjects\\PythonProject\\src\" />\r\n    </key>\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\Design-10\\PycharmProjects\\PythonProject\\src\\models\\interfaces\\impl\" />\r\n      <recent name=\"C:\\Users\\Design-10\\PycharmProjects\\PythonProject\\src\\models\\interfaces\" />\r\n      <recent name=\"C:\\Users\\Design-10\\PycharmProjects\\PythonProject\\notes\\old_notes\" />\r\n      <recent name=\"C:\\Users\\Design-10\\PycharmProjects\\PythonProject\\notes\" />\r\n      <recent name=\"C:\\Users\\Design-10\\PycharmProjects\\PythonProject\\docs\\old_docs\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunManager\" selected=\"Python.main (1)\">\r\n    <configuration name=\"main (1)\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"Watermark\" />\r\n      <option name=\"ENV_FILES\" value=\"\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$/src\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/src/main.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"main\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"Watermark\" />\r\n      <option name=\"ENV_FILES\" value=\"\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$/src/models\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"true\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <EXTENSION ID=\"PythonCoverageRunConfigurationExtension\" runner=\"coverage.py\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/src/models/main.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Python.main (1)\" />\r\n        <item itemvalue=\"Python.main\" />\r\n        <item itemvalue=\"Python.main\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-PY-243.24978.54\" />\r\n        <option value=\"bundled-python-sdk-91e3b7efe1d4-466328ff949b-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.24978.54\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"应用程序级\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"SvnConfiguration\">\r\n    <configuration>C:\\Users\\Design-10\\AppData\\Roaming\\Subversion</configuration>\r\n  </component>\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"默认任务\">\r\n      <changelist id=\"4e3d81b3-2670-4bf5-af0b-9de420058153\" name=\"更改\" comment=\"\" />\r\n      <created>1740467180516</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1740467180516</updated>\r\n      <workItem from=\"1740467181551\" duration=\"1794000\" />\r\n      <workItem from=\"1740468993320\" duration=\"19921000\" />\r\n      <workItem from=\"1740615126860\" duration=\"23430000\" />\r\n      <workItem from=\"1740653149455\" duration=\"1612000\" />\r\n      <workItem from=\"1740654803695\" duration=\"511000\" />\r\n      <workItem from=\"1740655322885\" duration=\"33178000\" />\r\n      <workItem from=\"1740791762995\" duration=\"56000\" />\r\n      <workItem from=\"1740824209513\" duration=\"2901000\" />\r\n      <workItem from=\"1740968845777\" duration=\"702000\" />\r\n      <workItem from=\"1740969564555\" duration=\"10622000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"界面v1.0.0\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1740532356820</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1740532356820</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"2\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"RECENT_FILTERS\">\r\n      <map>\r\n        <entry key=\"Branch\">\r\n          <value>\r\n            <list>\r\n              <RecentGroup>\r\n                <option name=\"FILTER_VALUES\">\r\n                  <option value=\"dev\" />\r\n                </option>\r\n              </RecentGroup>\r\n            </list>\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <ignored-roots>\r\n      <path value=\"$PROJECT_DIR$/notes\" />\r\n    </ignored-roots>\r\n    <MESSAGE value=\"Revert &quot;界面v1.0.1 更新日志、配置文件解耦&quot;&#10;&#10;This reverts commit 6c6c6a45\" />\r\n    <MESSAGE value=\"UI-v1.0.4-beta-basic-v1.0.0 优化main_window\" />\r\n    <MESSAGE value=\"UI-v1.0.4-beta-basic-v1.0.1 输入框引用优化问题\" />\r\n    <MESSAGE value=\"UI-v1.0.4-beta-basic-v1.0.1 输入框引用优化问题\" />\r\n    <MESSAGE value=\"UI-v1.0.4-beta-basic-v1.0.2 配置和显示不一致问题\" />\r\n    <MESSAGE value=\"UI-v1.0.4-beta-basic-v1.0.2 配置和显示不一致问题\" />\r\n    <MESSAGE value=\"UI-v1.0.4-beta-basic-v1.0.0 优化main_window\" />\r\n    <MESSAGE value=\"Model-v1.0.6-beta-basic-v1.0.0 Model层水印添加\" />\r\n    <MESSAGE value=\"Model-v1.0.6-beta-basic-v1.0.0 Model层水印添加\" />\r\n    <MESSAGE value=\"Model-v1.0.6-beta-basic-v1.0.2.1 算法优化问题-多线程并行优化\" />\r\n    <MESSAGE value=\"Model-v1.0.6-beta-basic-v1.0.2.1 算法优化问题-多线程并行优化\" />\r\n    <MESSAGE value=\"界面v1.0.0\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"界面v1.0.0\" />\r\n  </component>\r\n  <component name=\"XDebuggerManager\">\r\n    <breakpoint-manager>\r\n      <breakpoints>\r\n        <line-breakpoint enabled=\"true\" suspend=\"THREAD\" type=\"python-line\">\r\n          <url>file://$PROJECT_DIR$/ttt/main.py</url>\r\n          <line>77</line>\r\n          <option name=\"timeStamp\" value=\"1\" />\r\n        </line-breakpoint>\r\n        <line-breakpoint enabled=\"true\" suspend=\"THREAD\" type=\"python-line\">\r\n          <url>file://$PROJECT_DIR$/presenter/main_presenter.py</url>\r\n          <line>24</line>\r\n          <option name=\"timeStamp\" value=\"2\" />\r\n        </line-breakpoint>\r\n        <line-breakpoint enabled=\"true\" suspend=\"THREAD\" type=\"python-line\">\r\n          <url>file://$PROJECT_DIR$/ui/main_window.py</url>\r\n          <line>100</line>\r\n          <option name=\"timeStamp\" value=\"4\" />\r\n        </line-breakpoint>\r\n        <line-breakpoint enabled=\"true\" suspend=\"THREAD\" type=\"python-line\">\r\n          <url>file://$PROJECT_DIR$/config.py</url>\r\n          <line>10</line>\r\n          <option name=\"timeStamp\" value=\"5\" />\r\n        </line-breakpoint>\r\n        <line-breakpoint enabled=\"true\" suspend=\"THREAD\" type=\"python-line\">\r\n          <url>file://$PROJECT_DIR$/ui/main_window.py</url>\r\n          <line>71</line>\r\n          <option name=\"timeStamp\" value=\"6\" />\r\n        </line-breakpoint>\r\n        <line-breakpoint enabled=\"true\" suspend=\"THREAD\" type=\"python-line\">\r\n          <url>file://$PROJECT_DIR$/src/main.py</url>\r\n          <option name=\"timeStamp\" value=\"7\" />\r\n        </line-breakpoint>\r\n        <line-breakpoint enabled=\"true\" suspend=\"THREAD\" type=\"python-line\">\r\n          <url>file://$PROJECT_DIR$/src/utils/serialization.py</url>\r\n          <line>6</line>\r\n          <option name=\"timeStamp\" value=\"12\" />\r\n        </line-breakpoint>\r\n        <line-breakpoint enabled=\"true\" suspend=\"THREAD\" type=\"python-line\">\r\n          <url>file://$PROJECT_DIR$/src/models/interfaces/impl/normal_processor.py</url>\r\n          <line>30</line>\r\n          <option name=\"timeStamp\" value=\"133\" />\r\n        </line-breakpoint>\r\n      </breakpoints>\r\n    </breakpoint-manager>\r\n  </component>\r\n  <component name=\"com.intellij.coverage.CoverageDataManagerImpl\">\r\n    <SUITE FILE_PATH=\"coverage/Watermark$main__2_.coverage\" NAME=\"main (2) 覆盖结果\" MODIFIED=\"1741070769680\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"false\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/src/multi_processor\" />\r\n    <SUITE FILE_PATH=\"coverage/Watermark$main__1_.coverage\" NAME=\"main (1) 覆盖结果\" MODIFIED=\"1741077384856\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"false\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/src\" />\r\n    <SUITE FILE_PATH=\"coverage/Watermark$serialization.coverage\" NAME=\"serialization Coverage Results\" MODIFIED=\"1740983541711\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"false\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/src/utils\" />\r\n    <SUITE FILE_PATH=\"coverage/PythonProject$main.coverage\" NAME=\"main Coverage Results\" MODIFIED=\"1740709594599\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"false\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\r\n    <SUITE FILE_PATH=\"coverage/PythonProject$basic2.coverage\" NAME=\"basic2 Coverage Results\" MODIFIED=\"1740723507702\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"false\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/utils\" />\r\n    <SUITE FILE_PATH=\"coverage/Watermark$.coverage\" NAME=\" Coverage Results\" MODIFIED=\"1740981930476\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"false\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/src/utils\" />\r\n    <SUITE FILE_PATH=\"coverage/PythonProject$main__2_.coverage\" NAME=\"main (2) 覆盖结果\" MODIFIED=\"1740468360283\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"false\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/ttt\" />\r\n    <SUITE FILE_PATH=\"coverage/PythonProject$main__1_.coverage\" NAME=\"main (1) 覆盖结果\" MODIFIED=\"1740817489334\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"false\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/src/models\" />\r\n    <SUITE FILE_PATH=\"coverage/Watermark$main.coverage\" NAME=\"main 覆盖结果\" MODIFIED=\"1741072317703\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"false\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/src/models\" />\r\n    <SUITE FILE_PATH=\"coverage/Watermark$basic.coverage\" NAME=\"basic 覆盖结果\" MODIFIED=\"1741047638272\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"false\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/src/utils\" />\r\n    <SUITE FILE_PATH=\"coverage/PythonProject$basic.coverage\" NAME=\"basic 覆盖结果\" MODIFIED=\"1740812155569\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"false\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/src/utils\" />\r\n    <SUITE FILE_PATH=\"coverage/PythonProject$watermark_model.coverage\" NAME=\"watermark_model Coverage Results\" MODIFIED=\"1740706242346\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"false\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/models\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 859b51b374e1e442b47c9d224f7ffeef507aeaf2)
++++ b/.idea/workspace.xml	(date 1741079368798)
+@@ -6,9 +6,7 @@
+   <component name="ChangeListManager">
+     <list default="true" id="4e3d81b3-2670-4bf5-af0b-9de420058153" name="更改" comment="界面v1.0.0">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/container/container.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/container/container.py" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/src/models/interfaces/base_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/interfaces/base_processor.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/models/interfaces/impl/normal_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/interfaces/impl/normal_processor.py" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -276,27 +274,28 @@
+           <url>file://$PROJECT_DIR$/ui/main_window.py</url>
+           <line>71</line>
+           <option name="timeStamp" value="6" />
+-        </line-breakpoint>
+-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+-          <url>file://$PROJECT_DIR$/src/main.py</url>
+-          <option name="timeStamp" value="7" />
+         </line-breakpoint>
+         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+           <url>file://$PROJECT_DIR$/src/utils/serialization.py</url>
+           <line>6</line>
+           <option name="timeStamp" value="12" />
+         </line-breakpoint>
+-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
++        <line-breakpoint suspend="THREAD" type="python-line">
+           <url>file://$PROJECT_DIR$/src/models/interfaces/impl/normal_processor.py</url>
+           <line>30</line>
+-          <option name="timeStamp" value="133" />
++          <option name="timeStamp" value="136" />
++        </line-breakpoint>
++        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
++          <url>file://$USER_HOME$/.conda/envs/haiyin_python313/Lib/threading.py</url>
++          <line>991</line>
++          <option name="timeStamp" value="139" />
+         </line-breakpoint>
+       </breakpoints>
+     </breakpoint-manager>
+   </component>
+   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+     <SUITE FILE_PATH="coverage/Watermark$main__2_.coverage" NAME="main (2) 覆盖结果" MODIFIED="1741070769680" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/multi_processor" />
+-    <SUITE FILE_PATH="coverage/Watermark$main__1_.coverage" NAME="main (1) 覆盖结果" MODIFIED="1741077384856" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
++    <SUITE FILE_PATH="coverage/Watermark$main__1_.coverage" NAME="main (1) 覆盖结果" MODIFIED="1741079226292" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+     <SUITE FILE_PATH="coverage/Watermark$serialization.coverage" NAME="serialization Coverage Results" MODIFIED="1740983541711" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/utils" />
+     <SUITE FILE_PATH="coverage/PythonProject$main.coverage" NAME="main Coverage Results" MODIFIED="1740709594599" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+     <SUITE FILE_PATH="coverage/PythonProject$basic2.coverage" NAME="basic2 Coverage Results" MODIFIED="1740723507702" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
