@@ -23,13 +23,13 @@ watermark_types:
         min: 0
         max: 100
         default: 75
-      allowed_formats:
-        label: "允许格式"
-        input_type: QComboBox
-        type: list[str]
-        required: false
-        options: [ jpg, png ]
-        default: jpg
+#      allowed_formats:
+#        label: "允许格式"
+#        input_type: QComboBox
+#        type: list[str]
+#        required: false
+#        options: [ jpg, png ]
+#        default: jpg
       enhancement:
         label: "是否增强"
         input_type: QCheckBox
