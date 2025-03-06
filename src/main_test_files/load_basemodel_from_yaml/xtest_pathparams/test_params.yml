@@ -1,0 +1,40 @@
+test_cases:
+  - description: "使用默认透明度"
+    input:
+      output_dir: "output"
+    should_fail: false
+
+  - description: "自定义透明度"
+    input:
+      opacity: 0.5
+      output_dir: "processed"
+    should_fail: false
+
+  - description: "最大透明度"
+    input:
+      opacity: 1.0
+      output_dir: "result/v1"
+    should_fail: false
+
+  - description: "透明度低于最小值"
+    input:
+      opacity: -0.5
+      output_dir: "error"
+    should_fail: true
+
+  - description: "错误类型透明度"
+    input:
+      opacity: "invalid"
+      output_dir: "error"
+    should_fail: true
+
+  - description: "缺少必要字段"
+    input:
+      opacity: 0.5
+    should_fail: true
+
+  - description: "非法路径类型"
+    input:
+      opacity: 1.0
+      output_dir: 12345
+    should_fail: true
