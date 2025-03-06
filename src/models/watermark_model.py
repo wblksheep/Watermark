@@ -3,6 +3,7 @@ from pathlib import Path
 from pydantic import validate_arguments
 from functools import wraps
 
+from src.config import ModelParams
 from src.config_loader.config_loader import ConfigLoader
 from src.factory.processor_factory import ProcessorFactory
 from src.models.config_loader.config_loader import YamlWatermarkConfig
@@ -12,15 +13,19 @@ logger = logging.getLogger(__name__)
 
 class WatermarkModel:
     def __init__(self):
-        self.config = ConfigLoader.load_watermark_config()
+        self.config = None
+        self.processor_factory = None
+        # self._build_handlers()
+
+    def dependency_inject_after_init(self, model_config: ModelParams):
+        self.config=model_config
         self.processor_factory = ProcessorFactory(self.config)
         self._build_handlers()
-
     def get_watermark_config(self):
         return self.config
 
     def get_handler(self, wm_type):
-        return getattr(self, self.config.config[wm_type]['handler'])
+        return getattr(self, self.config.watermark_types[wm_type]['handler'])
 
 
 
@@ -71,14 +76,14 @@ class WatermarkModel:
     def _build_handlers(self):
 
         """动态创建带验证的处理方法"""
-        for wm_type in self.config.config:
-            handler_name = self.config.config[wm_type]['handler']
+        for wm_type in self.config.watermark_types:
+            handler_name = self.config.watermark_types[wm_type]['handler']
             original_method = getattr(self, handler_name)
 
             # 生成参数约束规则
             param_rules = {
                 param: {'type': info['type'], **info.get('validations', {})}
-                for param, info in self.config.config[wm_type]['params'].items()
+                for param, info in self.config.watermark_types[wm_type]['params'].items()
             }
 
             # 立即绑定当前作用域的wm_type
@@ -100,7 +105,7 @@ class WatermarkModel:
     def _sanitize_params(self, wm_type, raw_params):
         """参数清洗与验证"""
         valid_params = {}
-        for param, config in self.config.config[wm_type]['params'].items():
+        for param, config in self.config.watermark_types[wm_type]['params'].items():
             # 必填校验
             if config.get('required') and param not in raw_params:
                 raise ValueError(f"缺少必要参数: {param}")

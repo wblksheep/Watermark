@@ -2,6 +2,9 @@ from PySide6.QtCore import QObject, Qt
 from typing import Dict, Any, Callable
 from functools import lru_cache
 import logging
+
+from src.config import AppConfig
+
 logger = logging.getLogger(__name__)
 
 
@@ -14,14 +17,17 @@ class MainPresenter(QObject):
     ]
     _handler_map: Dict[str, Callable]
 
-    def __init__(self, view, model):
+    def __init__(self, view, model, config: AppConfig):
         super().__init__()
+        self._config = config
         self.view = view
         self.model = model
         self._handler_map = {}
         self._connect_signals()
         self.view.set_presenter(self)  # 关键：反向设置
+        self.view.set_view_config(self._config.view_params)
         self.view.initAfterInjection()
+        self.model.dependency_inject_after_init(self._config.model_params)
         # 延迟加载大配置项
         self._watermark_config = None  # Model 封装配置加载
         self._bind_handlers()
@@ -34,7 +40,7 @@ class MainPresenter(QObject):
 
     def _bind_handlers(self):
         # 动态绑定配置中的处理器
-        for wm_type in self.model.config.config:
+        for wm_type in self.model.config.watermark_types:
             self._register_handler(wm_type)
 
     def _register_handler(self, wm_type: str):
@@ -59,7 +65,7 @@ class MainPresenter(QObject):
 
     def _collect_params(self, wm_type) -> Dict[str, Any]:
         # 合并配置默认值与用户输入
-        default_params = self.model.config.config[wm_type]['params']
+        default_params = self.model.config.watermark_types[wm_type]['params']
         user_params = self.view.get_watermark_params(wm_type)
         return {**default_params, **user_params}
 
@@ -93,7 +99,7 @@ class MainPresenter(QObject):
         return "default"
 
     def handle_selection(self, index):
-        handler_name = [wm_type for wm_type, _ in self.watermark_config.config.items()][index]
+        handler_name = [wm_type for wm_type, _ in self.model.config.watermark_types.items()][index]
         handler = getattr(self, f"handle_{handler_name}", self._default_handler)
         handler()
 

@@ -150,7 +150,7 @@ class BaseWatermarkProcessor(Generic[T]):
             # 线程池配置日志
             max_workers = min(os.cpu_count() or 4, len(tasks))
             self._logger.info(
-                f"🛠初始化线程池 | 最大工作线程: {max_workers} | "
+                f"初始化线程池 | 最大工作线程: {max_workers} | "
                 f"总任务数: {len(tasks)} | "
                 f"预计并发度: {min(max_workers, len(tasks))}"
             )
