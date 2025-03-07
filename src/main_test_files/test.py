@@ -136,17 +136,9 @@ class MainWindow(IMainWindow):
 
         for param_key, param_config in params.items():
             widget, getter = InputWidgetFactory.create(param_config, param_config.get('default'))
-            input_type = param_config.get("type", "string")
 
             # 创建界面元素
             q_label = QLabel(param_config.get('label', param_key))
-
-            # 存储输入组件和取值函数
-            container.input_fields[param_key] = {
-                "widget": widget,
-                "get_value": getter,
-                "type": input_type
-            }
 
             layout.addWidget(q_label)
             layout.addWidget(widget)

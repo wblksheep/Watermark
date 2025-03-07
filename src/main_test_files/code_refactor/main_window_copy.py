@@ -12,7 +12,6 @@ from PySide6.QtCore import Qt, Signal, QSize
 import logging
 
 from src.config import ViewParams
-from src.factory.inputwidget_factory import InputWidgetFactory
 from src.ui.interfaces import IMainWindow
 from src.ui.styles import MAIN_STYLE
 
@@ -27,8 +26,6 @@ class StyledButton(QPushButton):
             self.setIconSize(QSize(20, 20))
         self.setMinimumSize(120, 40)
         self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
-
-
 
 class MainWindow(IMainWindow):
     # 定义信号（用于向Presenter传递事件）
@@ -135,21 +132,33 @@ class MainWindow(IMainWindow):
                 return line_edit, lambda: line_edit.text()
 
         for param_key, param_config in params.items():
-            widget, getter = InputWidgetFactory.create(param_config, param_config.get('default'))
+            # 兼容新旧配置格式
+            if not isinstance(param_config, dict):
+                param_config = {
+                    "label": param_key,
+                    "default": param_config,
+                    "type": "string"
+                }
+
+            # 获取配置参数
+            label = param_config.get("label", param_key)
+            default_value = param_config.get("default", "")
             input_type = param_config.get("type", "string")
 
             # 创建界面元素
-            q_label = QLabel(param_config.get('label', param_key))
+            q_label = QLabel(label)
+            input_widget, getter = create_input_widget(param_config, default_value)
+
 
             # 存储输入组件和取值函数
             container.input_fields[param_key] = {
-                "widget": widget,
+                "widget": input_widget,
                 "get_value": getter,
                 "type": input_type
             }
 
             layout.addWidget(q_label)
-            layout.addWidget(widget)
+            layout.addWidget(input_widget)
 
         container.setLayout(layout)
         return container
@@ -164,7 +173,6 @@ class MainWindow(IMainWindow):
                 print(f"参数 {param_key} 获取错误: {str(e)}")
         return values
 
-    ### flags
     def get_watermark_params(self, wm_type):
         return {
             param: self.get_param_values(self.params_inputs[wm_type])[param]
@@ -301,3 +309,5 @@ class MainWindow(IMainWindow):
         text = "取消始终置顶" if is_topmost else "始终置顶"
         self.always_on_top_action.setText(text)
         self.show()
+
+
