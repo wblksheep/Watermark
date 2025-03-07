@@ -84,7 +84,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "deletionFromPopupRequiresConfirmation": "false",
-    "git-widget-placeholder": "dev",
+    "git-widget-placeholder": "master",
     "last_opened_file_path": "C:/Users/Design-10/PycharmProjects/PythonProject/src/main_test_files/load_basemodel_from_yaml/test_pathparams",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -294,13 +294,8 @@
           <option name="timeStamp" value="182" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/presenter/main_presenter.py</url>
-          <line>93</line>
-          <option name="timeStamp" value="198" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/ui/main_window.py</url>
-          <line>81</line>
+          <line>76</line>
           <option name="timeStamp" value="202" />
         </line-breakpoint>
       </breakpoints>
@@ -317,7 +312,7 @@
     <SUITE FILE_PATH="coverage/PythonProject$main__2_.coverage" NAME="main (2) 覆盖结果" MODIFIED="1740468360283" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ttt" />
     <SUITE FILE_PATH="coverage/Watermark$main__4_.coverage" NAME="main (4) 覆盖结果" MODIFIED="1741244365880" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/main_test_files/basemodel_test_in_global_config" />
     <SUITE FILE_PATH="coverage/PythonProject$main__1_.coverage" NAME="main (1) 覆盖结果" MODIFIED="1740817489334" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/models" />
-    <SUITE FILE_PATH="coverage/Watermark$main.coverage" NAME="main 覆盖结果" MODIFIED="1741306011674" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/Watermark$main.coverage" NAME="main 覆盖结果" MODIFIED="1741306203272" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/Watermark$main__3_.coverage" NAME="main (3) 覆盖结果" MODIFIED="1741241147144" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/main_test_files/load_basemodel_from_yaml" />
     <SUITE FILE_PATH="coverage/Watermark$basic.coverage" NAME="basic 覆盖结果" MODIFIED="1741047638272" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/utils" />
     <SUITE FILE_PATH="coverage/PythonProject$basic.coverage" NAME="basic 覆盖结果" MODIFIED="1740812155569" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/utils" />

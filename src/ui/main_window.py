@@ -55,11 +55,6 @@ class MainWindow(IMainWindow):
         self.title_font = QFont("微软雅黑", 14, QFont.Bold)
         self.label_font = QFont("微软雅黑", 10)
 
-    def _init_fonts(self):
-        """字体初始化"""
-        self.title_font = QFont("微软雅黑", 14, QFont.Bold)
-        self.label_font = QFont("微软雅黑", 10)
-
     def show_error(self, message):
         QMessageBox.critical(self, "错误", message)
 
