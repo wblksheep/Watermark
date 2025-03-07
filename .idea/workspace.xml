@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4e3d81b3-2670-4bf5-af0b-9de420058153" name="更改" comment="界面v1.0.0">
-      <change afterPath="$PROJECT_DIR$/src/ui/styles.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/factory/processor_factory.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/factory/processor_factory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/presenter/main_presenter.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/presenter/main_presenter.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ui/main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/main_window.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -320,7 +317,7 @@
     <SUITE FILE_PATH="coverage/PythonProject$main__2_.coverage" NAME="main (2) 覆盖结果" MODIFIED="1740468360283" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ttt" />
     <SUITE FILE_PATH="coverage/Watermark$main__4_.coverage" NAME="main (4) 覆盖结果" MODIFIED="1741244365880" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/main_test_files/basemodel_test_in_global_config" />
     <SUITE FILE_PATH="coverage/PythonProject$main__1_.coverage" NAME="main (1) 覆盖结果" MODIFIED="1740817489334" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/models" />
-    <SUITE FILE_PATH="coverage/Watermark$main.coverage" NAME="main 覆盖结果" MODIFIED="1741304924197" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/Watermark$main.coverage" NAME="main 覆盖结果" MODIFIED="1741306011674" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/Watermark$main__3_.coverage" NAME="main (3) 覆盖结果" MODIFIED="1741241147144" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/main_test_files/load_basemodel_from_yaml" />
     <SUITE FILE_PATH="coverage/Watermark$basic.coverage" NAME="basic 覆盖结果" MODIFIED="1741047638272" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/utils" />
     <SUITE FILE_PATH="coverage/PythonProject$basic.coverage" NAME="basic 覆盖结果" MODIFIED="1740812155569" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/utils" />

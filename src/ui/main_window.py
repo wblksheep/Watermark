@@ -223,12 +223,6 @@ class MainWindow(IMainWindow):
         main_layout.setContentsMargins(20, 10, 20, 20)
         main_layout.setSpacing(15)
         self._create_title_section(main_layout)
-        # self._create_config_section(main_layout)
-        # self._create_action_buttons(main_layout)
-        #
-        # central_widget.setLayout(main_layout)
-
-        self._create_title_label(main_layout)
         self._create_watermark_selector(main_layout)
         self._create_folder_selection(main_layout)
         self._create_generate_button(main_layout)
@@ -246,18 +240,6 @@ class MainWindow(IMainWindow):
         line.setFrameShadow(QFrame.Sunken)
         layout.addWidget(line)
 
-    def _create_config_section(self, layout):
-        """配置区域容器"""
-        config_container = QWidget()
-        config_layout = QVBoxLayout()
-        config_layout.setSpacing(12)
-
-        self._create_watermark_selector(config_layout)
-        self._create_folder_selector(config_layout)
-        self._create_param_stack(config_layout)
-
-        config_container.setLayout(config_layout)
-        layout.addWidget(config_container)
 
     def _create_watermark_selector(self, layout):
         """水印类型选择器"""
@@ -273,63 +255,13 @@ class MainWindow(IMainWindow):
 
         layout.addLayout(selector_layout)
 
-    def _create_folder_selector(self, layout):
-        """现代风格文件夹选择器"""
-        folder_container = QWidget()
-        folder_layout = QHBoxLayout()
-        folder_layout.setContentsMargins(0, 0, 0, 0)
-
-        self.folder_input = QLineEdit()
-        self.folder_input.setPlaceholderText("点击右侧按钮选择输入文件夹...")
-        self.folder_input.setReadOnly(True)
-        folder_layout.addWidget(self.folder_input)
-
-        folder_btn = StyledButton("", "assets/folder_icon.png")
-        folder_btn.setToolTip("选择文件夹")
-        folder_btn.clicked.connect(self._emit_folder_selected)
-        folder_layout.addWidget(folder_btn)
-
-        folder_container.setLayout(folder_layout)
-        layout.addWidget(folder_container)
-
-    def _create_param_stack(self, layout):
-        """参数堆叠布局优化"""
-        self.param_stack = QStackedWidget()
-        self.param_stack.setStyleSheet("""
-            QStackedWidget {
-                background: #FFFFFF;
-                border-radius: 6px;
-                padding: 12px;
-                border: 1px solid #CED4DA;
-            }
-        """)
-
-        # 参数面板初始化保持不变...
-        layout.addWidget(self.param_stack)
-
-    def _create_action_buttons(self, layout):
-        """操作按钮区域"""
-        btn_container = QWidget()
-        btn_layout = QHBoxLayout()
-        btn_layout.setContentsMargins(0, 10, 0, 0)
-
-        self.generate_btn = StyledButton("开始生成", "assets/start_icon.png")
-        self.generate_btn.clicked.connect(lambda: self.generate_triggered.emit(
-            self.combo.currentIndex()
-        ))
-        btn_layout.addWidget(self.generate_btn)
-
-        btn_container.setLayout(btn_layout)
-        layout.addWidget(btn_container)
 
 
 
 
 
-    def _create_title_label(self, layout):
-        label = QLabel("界面示例")
-        label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(label)
+
+
 
     def _create_watermark_selector(self, layout):
         self.combo = QComboBox()
