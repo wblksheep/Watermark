@@ -78,7 +78,10 @@ def _default_stats():
 
 class ProcessorParams(BaseModel):
     """参数基类（定义公共字段）"""
-    opacity: float = 0.8
+    opacity: int = 75
+    output_height: int = 1000
+    quality: int = 30
+    enhancement: bool = True
     output_dir: Path
 
 # 泛型参数约束
@@ -271,4 +274,4 @@ class BaseWatermarkProcessor(Generic[T]):
         return self._config
 
     def _parse_config(self, config):
-        return {**config}
+        return {item: data['default'] for item, data in config['params'].items()}

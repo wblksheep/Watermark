@@ -12,35 +12,70 @@ view_params:
           min: 0
           max: 100
           default: 75
-        #      allowed_formats:
-        #        label: "允许格式"
-        #        input_type: QComboBox
-        #        type: list[str]
-        #        required: false
-        #        options: [ jpg, png ]
-        #        default: jpg
+        output_height:
+          label: "输出高度"
+          input_type: QSpinBox
+          type: int
+          required: false # 新增必填标记
+          min: 0
+          max: 2000
+          default: 1000
+        quality:
+          label: "质量"
+          input_type: QSpinBox
+          type: int
+          required: false # 新增必填标记
+          min: 0
+          max: 100
+          default: 30
         enhancement:
           label: "是否增强"
           input_type: QCheckBox
           type: bool
           required: false
           options: [ true, 1, yes ]
-          default: true
+          default: false
     foggy:
       display: "雾化"
       handler: "process_foggy_watermark"
       params:
-        default_font:
-          label: "默认字体"
-          type: str
+        opacity:
+          label: "透明度"
+          input_type: QSpinBox
+          type: int
+          required: false # 新增必填标记
+          min: 0
+          max: 100
+          default: 75
+        output_height:
+          label: "输出高度"
+          input_type: QSpinBox
+          type: int
+          required: false # 新增必填标记
+          min: 0
+          max: 2000
+          default: 1000
+        quality:
+          label: "质量"
+          input_type: QSpinBox
+          type: int
+          required: false # 新增必填标记
+          min: 0
+          max: 100
+          default: 30
+        enhancement:
+          label: "是否增强"
+          input_type: QCheckBox
+          type: bool
           required: false
-          default: "Arial"
+          options: [ true, 1, yes ]
+          default: false
 model_params:
   watermark_types:
     normal:
       display: "正常"
       handler: "process_normal_watermark"
-      npy_path: "watermark_normal_200.npy"
+      npy_path: "watermark_normal_1000.npy"
       opacity: 50
       quality: 30
       output_height: 1000
@@ -53,30 +88,65 @@ model_params:
           min: 0
           max: 100
           default: 75
-        #      allowed_formats:
-        #        label: "允许格式"
-        #        input_type: QComboBox
-        #        type: list[str]
-        #        required: false
-        #        options: [ jpg, png ]
-        #        default: jpg
+        output_height:
+          label: "输出高度"
+          input_type: QSpinBox
+          type: int
+          required: false # 新增必填标记
+          min: 0
+          max: 2000
+          default: 1000
+        quality:
+          label: "质量"
+          input_type: QSpinBox
+          type: int
+          required: false # 新增必填标记
+          min: 0
+          max: 100
+          default: 30
         enhancement:
           label: "是否增强"
           input_type: QCheckBox
           type: bool
           required: false
           options: [ true, 1, yes ]
-          default: true
+          default: false
     foggy:
       display: "雾化"
       handler: "process_foggy_watermark"
-      npy_path: "watermark_foggy_200.npy"
+      npy_path: "watermark_foggy_1000.npy"
       opacity: 50
       quality: 30
       output_height: 1000
       params:
-        default_font:
-          label: "默认字体"
-          type: str
+        opacity:
+          label: "透明度"
+          input_type: QSpinBox
+          type: int
+          required: false # 新增必填标记
+          min: 0
+          max: 100
+          default: 75
+        output_height:
+          label: "输出高度"
+          input_type: QSpinBox
+          type: int
+          required: false # 新增必填标记
+          min: 0
+          max: 2000
+          default: 1000
+        quality:
+          label: "质量"
+          input_type: QSpinBox
+          type: int
+          required: false # 新增必填标记
+          min: 0
+          max: 100
+          default: 30
+        enhancement:
+          label: "是否增强"
+          input_type: QCheckBox
+          type: bool
           required: false
-          default: "Arial"
+          options: [ true, 1, yes ]
+          default: false

@@ -1,11 +1,28 @@
 import io
 import os
 from pathlib import Path
+from typing import Dict
+
 from PIL import Image
 import numpy as np
-from ..base_processor import BaseWatermarkProcessor
+from ..base_processor import BaseWatermarkProcessor, ProcessorParams
 from ..interfaces import IWatermarkConfig
 
+# 参数对象定义
+class FoggyParams:
+    """雾化水印参数"""
+    opacity: int = 75
+    output_height: int = 1000
+    quality: int = 30
+    enhancement: bool = True
+    kwargs: Dict
+    """普通水印参数（隐式实现协议）"""
+    def __init__(self, opacity: int, output_height: int, quality: int,enhancement: bool, **kwargs):
+        self.opacity = opacity
+        self.output_height = output_height
+        self.quality = quality
+        self.enhancement = enhancement
+        self.kwargs = kwargs
 
 class FoggyWatermarkProcessor(BaseWatermarkProcessor):
     """常规水印处理器"""
@@ -25,7 +42,11 @@ class FoggyWatermarkProcessor(BaseWatermarkProcessor):
             raise FileNotFoundError(f"npy文件 {npy_path} 不存在")
         return np.load(npy_path)
 
-    def process_single(self, input_path: Path, output_path: Path) -> bool:
+    def _validate_params(self, params: ProcessorParams) -> FoggyParams:
+        """转换并校验雾化专用参数"""
+        return FoggyParams(**params.dict())
+
+    def process_single(self, input_path: Path, output_path: Path, params: FoggyParams) -> bool:
         try:
             # 加载并预处理图片
             base_image = self.load_image(input_path)

@@ -18,8 +18,10 @@ from src.ui.styles import MAIN_STYLE
 
 logger = logging.getLogger(__name__)
 
+
 class StyledButton(QPushButton):
     """带图标的现代风格按钮"""
+
     def __init__(self, text, icon_path=None):
         super().__init__(text)
         if icon_path:
@@ -27,7 +29,6 @@ class StyledButton(QPushButton):
             self.setIconSize(QSize(20, 20))
         self.setMinimumSize(120, 40)
         self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
-
 
 
 class MainWindow(IMainWindow):
@@ -120,7 +121,7 @@ class MainWindow(IMainWindow):
 
             elif input_type == "QCheckBox":
                 check = QCheckBox()
-                check.setChecked(True)
+                check.setChecked(self.config.get("default", True))
                 return check, lambda: check.isChecked()
 
             # elif input_type == "color":
@@ -227,7 +228,6 @@ class MainWindow(IMainWindow):
         line.setFrameShadow(QFrame.Sunken)
         layout.addWidget(line)
 
-
     def _create_watermark_selector(self, layout):
         """水印类型选择器"""
         selector_layout = QHBoxLayout()
@@ -241,14 +241,6 @@ class MainWindow(IMainWindow):
         selector_layout.addWidget(self.combo, 3)
 
         layout.addLayout(selector_layout)
-
-
-
-
-
-
-
-
 
     def _create_watermark_selector(self, layout):
         self.combo = QComboBox()
@@ -280,7 +272,6 @@ class MainWindow(IMainWindow):
         layout.addWidget(self.folder_input)
         layout.addWidget(folder_button)
 
-
     def _create_generate_button(self, layout):
         # 生成按钮
         generate_btn = QPushButton("生成水印")
@@ -295,7 +286,6 @@ class MainWindow(IMainWindow):
         folder = self.folder_selected.emit()
         if folder:
             self.folder_input.text()
-
 
     def update_topmost_status(self, is_topmost):
         text = "取消始终置顶" if is_topmost else "始终置顶"
