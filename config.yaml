@@ -11,7 +11,7 @@ view_params:
           required: false # 新增必填标记
           min: 0
           max: 100
-          default: 50
+          default: 75
         output_height:
           label: "输出高度"
           input_type: QSpinBox
@@ -46,7 +46,7 @@ view_params:
           required: false # 新增必填标记
           min: 0
           max: 100
-          default: 50
+          default: 75
         output_height:
           label: "输出高度"
           input_type: QSpinBox

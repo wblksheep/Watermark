@@ -22,22 +22,26 @@ class WatermarkModel:
 
 
 
-    def process_normal_watermark(self, folder,  **kwargs):
+    def process_normal_watermark(self, input_folder, output_folder,  **kwargs):
         processor = self.processor_factory.create_processor("normal")
-        output_dir = self._prepare_output_dir()
-        return processor.process_batch(folder, output_dir, **kwargs)
+        input_folder = Path(input_folder)
+        input_folder.mkdir(parents=True, exist_ok=True)
+        output_folder = Path(output_folder)
+        return processor.process_batch(input_folder, output_folder, **kwargs)
 
-    def process_foggy_watermark(self, folder, text="BH", **kwargs):
+    def process_foggy_watermark(self, input_folder, output_folder, **kwargs):
         """根据类型处理文件"""
         processor = self.processor_factory.create_processor("foggy")
-        output_dir = self._prepare_output_dir()
-        return processor.process_batch(folder, output_dir)
+        input_folder = Path(input_folder)
+        input_folder.mkdir(parents=True, exist_ok=True)
+        output_folder = Path(output_folder)
+        return processor.process_batch(input_folder, output_folder)
 
-    def _prepare_output_dir(self) -> Path:
-        """创建输出目录（复用逻辑）"""
-        output_dir = Path("output")
-        output_dir.mkdir(exist_ok=True)
-        return output_dir
+    # def _prepare_output_dir(self) -> Path:
+    #     """创建输出目录（复用逻辑）"""
+    #     output_dir = Path("output")
+    #     output_dir.mkdir(exist_ok=True)
+    #     return output_dir
 
     def load_watermark_config(self):
         return self.config

@@ -1,11 +1,16 @@
 import logging
+import configparser
+import dependency_injector.errors
+import dependency_injector.wiring
 import sys
 import os
 from pathlib import Path
 
+from src.config import AppConfig
+
 # ---------------------------- 日志初始化 ----------------------------
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format="%(asctime)s - %(name)s - [%(levelname)s] - %(message)s",
     handlers=[
         logging.FileHandler("app.log", encoding="utf-8"),
@@ -33,7 +38,7 @@ except ImportError as e:
 
 try:
     logger.debug("[模块导入] 尝试导入 container 模块...")
-    from container import Container
+    from src.container import Container
     logger.debug(f"[模块导入] container 模块路径: {Container.__module__}")
 except ImportError as e:
     logger.error("[模块导入] container 模块导入失败，可能路径配置错误！")
@@ -42,8 +47,8 @@ except ImportError as e:
 
 try:
     logger.debug("[模块导入] 尝试导入 config 模块...")
-    from config import setup_logging, AppConfig
-    logger.debug(f"[模块导入] config 模块路径: {os.path.abspath(__import__('config').__file__)}")
+    # from config import setup_logging, AppConfig
+    # logger.debug(f"[模块导入] config 模块路径: {os.path.abspath(__import__('config').__file__)}")
 except ImportError as e:
     logger.error("[模块导入] config 模块导入失败，检查文件是否存在！")
     logger.exception(e)
@@ -59,19 +64,19 @@ except ImportError as e:
     sys.exit(1)
 
 # ---------------------------- 函数定义 ----------------------------
-def get_base_path():
-    """获取资源基准路径（添加详细日志）"""
-    logger.debug("[路径解析] 开始计算基础路径...")
+def get_resource_path(filename):
+    """获取资源文件的绝对路径"""
     if getattr(sys, 'frozen', False):
-        base_path = Path(sys.executable).parent
-        logger.debug(f"[路径解析] 处于冻结环境，基础路径: {base_path}")
+        # 打包后的环境：资源在临时目录（单文件模式）或可执行文件目录（单目录模式）
+        base_path = Path(sys._MEIPASS) if hasattr(sys, '_MEIPASS') else Path(sys.executable).parent
     else:
+        # 开发环境：基于当前脚本路径
         base_path = Path(__file__).parent
-        logger.debug(f"[路径解析] 处于开发环境，基础路径: {base_path}")
 
-    logger.debug(f"[路径解析] 最终 base_path 是否存在: {base_path.exists()}")
-    logger.debug(f"[路径解析] base_path 内容列表:\n{', '.join(os.listdir(base_path))}")
-    return base_path
+    resource_path = base_path / filename
+    if not resource_path.exists():
+        raise FileNotFoundError(f"资源文件未找到: {resource_path}")
+    return resource_path
 
 def main():
     logger.info("=============== 进入 main 函数 ===============")
@@ -83,8 +88,7 @@ def main():
         logger.debug("QApplication 实例已创建")
 
         # ---------------------------- 配置加载 ----------------------------
-        base_path = get_base_path()
-        config_path = base_path / 'config.yaml'
+        config_path = get_resource_path('config.yaml')
         logger.debug(f"[配置加载] 尝试加载配置文件: {config_path.absolute()}")
         logger.debug(f"[配置加载] 配置文件是否存在: {config_path.exists()}")
         if not config_path.exists():

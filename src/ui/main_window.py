@@ -68,11 +68,17 @@ class MainWindow(IMainWindow):
     def show_folder_dialog(self, default_path):
         return QFileDialog.getExistingDirectory(self, "选择文件夹", default_path)
 
-    def set_folder_path(self, path):
+    def set_input_folder_path(self, path):
         self.folder_input.setText(path)
 
-    def get_folder_path(self):
+    def set_output_folder_path(self, path):
+        self.folder_output.setText(path)
+
+    def get_input_folder_path(self):
         return self.folder_input.text()
+
+    def get_output_folder_path(self):
+        return self.folder_output.text()
 
     def initAfterInjection(self):
         self.toggle_topmost.emit(True)
@@ -266,11 +272,19 @@ class MainWindow(IMainWindow):
         # 文件夹选择
         self.folder_input = QLineEdit()
         self.folder_input.setPlaceholderText("请选择文件夹")
-        self.set_folder_path(str(Path('resources/input').resolve()))
-        folder_button = QPushButton("选择文件夹")
-        folder_button.clicked.connect(self._emit_folder_selected)
+        self.set_input_folder_path(str(Path('resources/input').resolve()))
+        folder_input_button = QPushButton("选择文件夹")
+        folder_input_button.clicked.connect(self._emit_input_folder_selected)
+        # 文件夹选择
+        self.folder_output = QLineEdit()
+        self.folder_output.setPlaceholderText("请选择文件夹")
+        self.set_output_folder_path(str(Path('output').resolve()))
+        folder_output_button = QPushButton("选择文件夹")
+        folder_output_button.clicked.connect(self._emit_input_folder_selected)
         layout.addWidget(self.folder_input)
-        layout.addWidget(folder_button)
+        layout.addWidget(folder_input_button)
+        layout.addWidget(self.folder_output)
+        layout.addWidget(folder_output_button)
 
     def _create_generate_button(self, layout):
         # 生成按钮
@@ -282,10 +296,15 @@ class MainWindow(IMainWindow):
         )
         layout.addWidget(generate_btn)
 
-    def _emit_folder_selected(self):
+    def _emit_input_folder_selected(self):
         folder = self.folder_selected.emit()
         if folder:
             self.folder_input.text()
+
+    def _emit_output_folder_selected(self):
+        folder = self.folder_selected.emit()
+        if folder:
+            self.folder_output.text()
 
     def update_topmost_status(self, is_topmost):
         text = "取消始终置顶" if is_topmost else "始终置顶"

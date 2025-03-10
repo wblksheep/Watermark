@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='utf8'?>
+<nuitka-compilation-report nuitka_version="2.6.7" nuitka_commercial_version="not installed" mode="accelerated" completion="error exit message (1)" exit_message="Failed unexpectedly in Scons C backend compilation.">
+  <module name="__main__" kind="PythonMainModule" usage="root_module" reason="Root module" source_path="${cwd}\main.py">
+    <optimization-time pass="1" time="0.03" micro_passes="5" max_branch_merge="95" merged_total="1221" />
+    <optimization-time pass="2" time="0.00" micro_passes="1" max_branch_merge="84" merged_total="230" />
+    <module_usages>
+      <module_usage name="site" finding="excluded" line="1" exclusion_reason="Not following into stdlib unless standalone or requested to follow into stdlib." />
+      <module_usage name="logging" finding="excluded" line="1" exclusion_reason="Not following into stdlib unless standalone or requested to follow into stdlib." />
+      <module_usage name="configparser" finding="excluded" line="2" exclusion_reason="Not following into stdlib unless standalone or requested to follow into stdlib." />
+      <module_usage name="sys" finding="absolute" line="3" />
+      <module_usage name="os" finding="excluded" line="4" exclusion_reason="Not following into stdlib unless standalone or requested to follow into stdlib." />
+      <module_usage name="pathlib" finding="excluded" line="5" exclusion_reason="Not following into stdlib unless standalone or requested to follow into stdlib." />
+      <module_usage name="pathlib.Path" finding="not-found" line="5" />
+      <module_usage name="PySide6.QtWidgets" finding="excluded" line="30" exclusion_reason="Extension modules cannot be inspected." />
+      <module_usage name="src.container" finding="not-found" line="39" />
+      <module_usage name="config" finding="absolute" line="48" />
+      <module_usage name="config" finding="absolute" line="49" />
+      <module_usage name="src.config_loader" finding="not-found" line="57" />
+    </module_usages>
+  </module>
+  <performance>
+    <memory_usage name="after_launch" value="43216896" />
+    <memory_usage name="before_c_code_generation" value="44249088" />
+    <memory_usage name="before_running_scons" value="48263168" />
+  </performance>
+  <data_composer blob_size="3765" total="216">
+    <module_data filename="__bytecode.const" blob_name=".bytecode" blob_size="3" input_size="0" />
+    <module_data filename="__constants.const" blob_name="" blob_size="963" input_size="2316" />
+    <module_data filename="module.__main__.const" blob_name="__main__" blob_size="2759" input_size="4093" />
+  </data_composer>
+  <command_line>
+    <option value="main.py" />
+  </command_line>
+  <plugins>
+    <plugin name="anti-bloat" user_enabled="no" />
+    <plugin name="eventlet" user_enabled="no" />
+    <plugin name="gi" user_enabled="no" />
+    <plugin name="implicit-imports" user_enabled="no" />
+    <plugin name="multiprocessing" user_enabled="no" />
+    <plugin name="options-nanny" user_enabled="no" />
+    <plugin name="pkg-resources" user_enabled="no" />
+    <plugin name="transformers" user_enabled="no" />
+  </plugins>
+  <distributions />
+  <python python_exe="${sys.prefix}\python.exe" python_flavor="Anaconda Python" python_version="3.13.0" os_name="Windows" os_release="11" arch_name="x86_64" filesystem_encoding="utf-8">
+    <search_path>
+      <path value="${cwd}" />
+      <path value="${sys.prefix}\DLLs" />
+      <path value="${sys.prefix}\Lib" />
+      <path value="${sys.prefix}" />
+      <path value="${sys.prefix}\Lib\site-packages" />
+      <path value="${sys.prefix}\Lib\site-packages\setuptools\_vendor" />
+    </search_path>
+  </python>
+  <output run_filename="${cwd}\main.cmd" />
+</nuitka-compilation-report>

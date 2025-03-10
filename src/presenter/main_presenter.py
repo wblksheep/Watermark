@@ -52,9 +52,10 @@ class MainPresenter(QObject):
     def _create_handler(self, wm_type):
         def handler():
             try:
-                folder = self.view.get_folder_path()
+                input_folder = self.view.get_input_folder_path()
+                output_folder = self.view.get_output_folder_path()
                 params = self._collect_params(wm_type)
-                result = self.model.get_handler(wm_type)(folder, **params)
+                result = self.model.get_handler(wm_type)(input_folder, output_folder, **params)
 
                 #更新视图
                 self.view.show_info(f"已为{len(result)}个图片添加水印")
@@ -81,7 +82,11 @@ class MainPresenter(QObject):
         selected_path = self.view.show_folder_dialog("resources/input")
         if selected_path:
             # 通过接口更新视图
-            self.view.set_folder_path(selected_path)
+            self.view.set_input_folder_path(selected_path)
+        selected_path = self.view.show_folder_dialog("output")
+        if selected_path:
+            # 通过接口更新视图
+            self.view.set_output_folder_path(selected_path)
 
     # def toggle_window_topmost(self, is_topmost):
     #     # 将具体 flag 操作移至 View

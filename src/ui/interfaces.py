@@ -10,10 +10,16 @@ class IMainWindow(QMainWindow):
     def show_folder_dialog(self, default_path) -> str: pass
 
     @abstractmethod
-    def set_folder_path(self, path: str): pass
+    def set_input_folder_path(self, path: str): pass
 
     @abstractmethod
-    def get_folder_path(self) -> str: pass
+    def set_output_folder_path(self, path: str): pass
+
+    @abstractmethod
+    def get_input_folder_path(self) -> str: pass
+
+    @abstractmethod
+    def get_output_folder_path(self) -> str: pass
 
     @abstractmethod
     def get_opacity_input(self) -> str: pass

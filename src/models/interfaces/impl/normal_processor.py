@@ -29,7 +29,8 @@ class NormalWatermarkProcessor(BaseWatermarkProcessor[NormalParams]):
 
     def __init__(self, config: IWatermarkConfig, npy_path: str):
         super().__init__(config)
-        self._watermark_data = np.load(npy_path)
+        filepath = self.get_resource_path(npy_path)
+        self._watermark_data = np.load(filepath)
 
     def load_image(self, image_path):
         if not os.path.exists(image_path):

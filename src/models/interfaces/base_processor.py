@@ -54,6 +54,8 @@ class LogSystem:
     # def start(self):
     #     self.listener_thread.start()
 
+
+
     def shutdown(self):
         """安全关闭日志系统"""
         self.listener.stop()
@@ -101,6 +103,20 @@ class BaseWatermarkProcessor(Generic[T]):
         self._init_logger()
         self.default_params = self._parse_config(config)
 
+    ###change flags
+    def get_resource_path(self, filename):
+        """获取资源文件的绝对路径"""
+        if getattr(sys, 'frozen', False):
+            # 打包后的环境：资源在临时目录（单文件模式）或可执行文件目录（单目录模式）
+            base_path = Path(sys._MEIPASS) if hasattr(sys, '_MEIPASS') else Path(sys.executable).parent
+        else:
+            # 开发环境：基于当前脚本路径
+            base_path = Path(__file__).parent
+
+        resource_path = base_path / filename
+        if not resource_path.exists():
+            raise FileNotFoundError(f"资源文件未找到: {resource_path}")
+        return resource_path
     def _init_logger(self):
         """增强日志初始化"""
         self._logger = logging.getLogger(f"{self.__class__.__name__}.{id(self)}")
@@ -197,17 +213,32 @@ class BaseWatermarkProcessor(Generic[T]):
             self._print_stats()
 
     def _generate_tasks(self, input_dir: Path, output_dir: Path) -> Iterable[Tuple[Path, Path]]:
-        """添加任务生成日志"""
-        self._scan_skipped = 0
+        """递归生成文件处理任务"""
+        self._scan_skipped=0
         for entry in os.scandir(input_dir):
             src_path = Path(entry.path)
-            if entry.is_file() and src_path.suffix.lower() in self._SUPPORTED_EXT:
-                dest_path = output_dir / entry.name
-                self._logger.debug(f"添加处理任务: {src_path} → {dest_path}")
-                yield (src_path, dest_path)
+
+            if entry.is_file():
+                # 处理单个文件
+                if src_path.suffix.lower() in self._SUPPORTED_EXT:
+                    dest_path = output_dir / src_path.name
+                    self._logger.debug(f"✅ 添加任务: {src_path} → {dest_path}")
+                    yield (src_path, dest_path)
+                else:
+                    self._scan_skipped += 1
+                    self._logger.debug(f"⏩ 跳过非支持文件: {src_path}")
+
+            elif entry.is_dir():
+                # 处理子目录（递归）
+                sub_output = output_dir / entry.name
+                sub_output.mkdir(parents=True, exist_ok=True)
+                self._logger.debug(f"📂 进入子目录: {src_path} → {sub_output}")
+                yield from self._generate_tasks(src_path, sub_output)
+
             else:
+                # 处理非常规文件（如符号链接）
                 self._scan_skipped += 1
-                self._logger.debug(f"跳过非支持文件: {src_path}")
+                self._logger.warning(f"🚫 跳过非常规文件: {src_path}")
 
     @staticmethod
     def _init_worker():
