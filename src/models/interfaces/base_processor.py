@@ -31,7 +31,7 @@ class LogSystem:
         cls.log_queue = queue.Queue(-1)  # 无界队列
 
         # 日志处理器配置
-        file_handler = logging.FileHandler("watermark.log")
+        file_handler = logging.FileHandler("watermark.log", encoding="utf-8")
         stream_handler = logging.StreamHandler()
         # 增强日志格式（增加毫秒精度）
         formatter = logging.Formatter(

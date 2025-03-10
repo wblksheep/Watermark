@@ -12,7 +12,7 @@ class MainPresenter(QObject):
     _SIGNAL_BINDINGS = [
         ('generate_triggered', 'handle_selection'),
         ('folder_selected', 'handle_folder_selection'),
-        ('toggle_topmost', 'toggle_window_topmost'),
+        # ('toggle_topmost', 'toggle_window_topmost'),
         ('menu_clicked', 'on_menu_click')
     ]
     _handler_map: Dict[str, Callable]
@@ -83,10 +83,10 @@ class MainPresenter(QObject):
             # 通过接口更新视图
             self.view.set_folder_path(selected_path)
 
-    def toggle_window_topmost(self, is_topmost):
-        # 将具体 flag 操作移至 View
-        self.view.set_window_topmost(is_topmost)
-        self.view.update_topmost_status(is_topmost)
+    # def toggle_window_topmost(self, is_topmost):
+    #     # 将具体 flag 操作移至 View
+    #     self.view.set_window_topmost(is_topmost)
+    #     self.view.update_topmost_status(is_topmost)
 
 
     def handle_selection(self, index):
@@ -96,5 +96,3 @@ class MainPresenter(QObject):
 
     def _default_handler(self):
         print("未知选项，使用默认处理")
-
-

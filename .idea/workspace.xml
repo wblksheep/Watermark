@@ -5,11 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4e3d81b3-2670-4bf5-af0b-9de420058153" name="更改" comment="界面v1.0.0">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/config_loader/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/config_loader/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/container/container.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/container/container.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main_test_files/code_refactor/main_window_copy.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main_test_files/code_refactor/main_window_copy2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main_test_files/test.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/interfaces/base_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/interfaces/base_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/interfaces/impl/foggy_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/interfaces/impl/foggy_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/interfaces/impl/normal_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/interfaces/impl/normal_processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/presenter/main_presenter.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/presenter/main_presenter.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ui/main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/main_window.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -75,6 +80,7 @@
     "Python tests.Python tests for test_serialization.test_worker_init.executor": "Run",
     "Python tests.Python tests in test_serialization.py.executor": "Run",
     "Python 测试.Python 测试 (main.py 内).executor": "Run",
+    "Python.__init__.executor": "Run",
     "Python.basic.executor": "Run",
     "Python.basic2.executor": "Debug",
     "Python.main (1).executor": "Run",
@@ -83,19 +89,20 @@
     "Python.main (4).executor": "Debug",
     "Python.main.executor": "Run",
     "Python.serialization.executor": "Run",
+    "Python.test.executor": "Run",
     "Python.watermark_model.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "deletionFromPopupRequiresConfirmation": "false",
     "git-widget-placeholder": "feat/view",
-    "last_opened_file_path": "C:/Users/Design-10/PycharmProjects/PythonProject/src/main_test_files",
+    "last_opened_file_path": "C:/Users/Design-10/.conda/envs/haiyin_python313/Lib/site-packages/PyInstaller/utils/hooks/__init__.py",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "editor.preferences.import",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
     "settings.editor.splitter.proportion": "0.36302295",
     "vue.rearranger.settings.migration": "true"
   }
@@ -110,11 +117,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\src\icons" />
       <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\src\main_test_files" />
       <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\src\main_test_files\load_basemodel_from_yaml\test_pathparams" />
       <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\src" />
       <recent name="C:\Users\Design-10\PycharmProjects\PythonProject" />
-      <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\src\models\interfaces\impl" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Design-10\PycharmProjects\PythonProject\src\main_test_files\code_refactor" />
@@ -125,7 +132,7 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="Watermark" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -148,11 +155,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Python.main" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -184,6 +186,11 @@
       <workItem from="1740968845777" duration="702000" />
       <workItem from="1740969564555" duration="10622000" />
       <workItem from="1741132571989" duration="5111000" />
+      <workItem from="1741333223250" duration="2954000" />
+      <workItem from="1741336237292" duration="958000" />
+      <workItem from="1741337226160" duration="223000" />
+      <workItem from="1741337458125" duration="5499000" />
+      <workItem from="1741563757343" duration="3735000" />
     </task>
     <task id="LOCAL-00001" summary="界面v1.0.0">
       <option name="closed" value="true" />
@@ -195,6 +202,9 @@
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="TerminalProjectNonSharedOptionsProvider">
+    <option name="startingDirectory" value="C:\Users\Design-10\PycharmProjects\PythonProject\src" />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
@@ -303,9 +313,14 @@
           <option name="timeStamp" value="227" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/factory/inputwidget_factory.py</url>
-          <line>37</line>
-          <option name="timeStamp" value="228" />
+          <url>file://$USER_HOME$/.conda/envs/haiyin_python313/Lib/site-packages/PIL/IcoImagePlugin.py</url>
+          <line>53</line>
+          <option name="timeStamp" value="229" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/icons/test.py</url>
+          <line>7</line>
+          <option name="timeStamp" value="230" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -314,6 +329,7 @@
     <SUITE FILE_PATH="coverage/Watermark$main__2_.coverage" NAME="main (2) 覆盖结果" MODIFIED="1741240016905" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/models/interfaces" />
     <SUITE FILE_PATH="coverage/Watermark$main__1_.coverage" NAME="main (1) 覆盖结果" MODIFIED="1741245117529" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/Watermark$serialization.coverage" NAME="serialization Coverage Results" MODIFIED="1740983541711" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/utils" />
+    <SUITE FILE_PATH="coverage/Watermark$__init__.coverage" NAME="__init__ 覆盖结果" MODIFIED="1741335259184" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/.conda/envs/haiyin_python313/Lib/site-packages/PyInstaller/utils/hooks" />
     <SUITE FILE_PATH="coverage/PythonProject$main.coverage" NAME="main Coverage Results" MODIFIED="1740709594599" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/PythonProject$basic2.coverage" NAME="basic2 Coverage Results" MODIFIED="1740723507702" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
     <SUITE FILE_PATH="coverage/Watermark$base_processor.coverage" NAME="base_processor 覆盖结果" MODIFIED="1741079618710" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/models/interfaces" />
@@ -321,9 +337,10 @@
     <SUITE FILE_PATH="coverage/PythonProject$main__2_.coverage" NAME="main (2) 覆盖结果" MODIFIED="1740468360283" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ttt" />
     <SUITE FILE_PATH="coverage/Watermark$main__4_.coverage" NAME="main (4) 覆盖结果" MODIFIED="1741244365880" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/main_test_files/basemodel_test_in_global_config" />
     <SUITE FILE_PATH="coverage/PythonProject$main__1_.coverage" NAME="main (1) 覆盖结果" MODIFIED="1740817489334" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/models" />
-    <SUITE FILE_PATH="coverage/Watermark$main.coverage" NAME="main 覆盖结果" MODIFIED="1741328043833" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/Watermark$main.coverage" NAME="main 覆盖结果" MODIFIED="1741567378345" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/Watermark$main__3_.coverage" NAME="main (3) 覆盖结果" MODIFIED="1741241147144" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/main_test_files/load_basemodel_from_yaml" />
     <SUITE FILE_PATH="coverage/Watermark$basic.coverage" NAME="basic 覆盖结果" MODIFIED="1741047638272" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/utils" />
+    <SUITE FILE_PATH="coverage/Watermark$test.coverage" NAME="test 覆盖结果" MODIFIED="1741330813174" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/icons" />
     <SUITE FILE_PATH="coverage/PythonProject$basic.coverage" NAME="basic 覆盖结果" MODIFIED="1740812155569" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/utils" />
     <SUITE FILE_PATH="coverage/PythonProject$watermark_model.coverage" NAME="watermark_model Coverage Results" MODIFIED="1740706242346" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/models" />
   </component>

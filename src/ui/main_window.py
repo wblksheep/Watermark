@@ -190,14 +190,14 @@ class MainWindow(IMainWindow):
         file_action.triggered.connect(lambda: self.menu_clicked.emit("文件"))
         menu_bar.addAction(file_action)
 
-        # 窗口置顶
-        self.always_on_top_action = QAction("取消始终置顶", self)
-        self.always_on_top_action.setCheckable(True)
-        self.always_on_top_action.setChecked(True)
-        self.always_on_top_action.triggered.connect(
-            lambda checked: self.toggle_topmost.emit(checked)
-        )
-        menu_bar.addAction(self.always_on_top_action)
+        # # 窗口置顶
+        # self.always_on_top_action = QAction("取消始终置顶", self)
+        # self.always_on_top_action.setCheckable(True)
+        # self.always_on_top_action.setChecked(True)
+        # self.always_on_top_action.triggered.connect(
+        #     lambda checked: self.toggle_topmost.emit(checked)
+        # )
+        # menu_bar.addAction(self.always_on_top_action)
 
     def _create_main_content(self):
         central_widget = QWidget()
