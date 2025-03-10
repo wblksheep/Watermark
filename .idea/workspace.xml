@@ -5,20 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4e3d81b3-2670-4bf5-af0b-9de420058153" name="更改" comment="界面v1.0.0">
-      <change afterPath="$PROJECT_DIR$/config.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/nuitka-crash-report.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/src/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/container/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/container/container.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/container.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/interfaces/base_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/interfaces/base_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/interfaces/impl/foggy_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/interfaces/impl/foggy_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/interfaces/impl/normal_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/interfaces/impl/normal_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/watermark_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/watermark_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/presenter/main_presenter.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/presenter/main_presenter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/interfaces.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/interfaces.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/main_window.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,8 +86,8 @@
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "deletionFromPopupRequiresConfirmation": "false",
-    "git-widget-placeholder": "feat/view",
-    "last_opened_file_path": "C:/Users/Design-10/PycharmProjects/PythonProject/src/models/interfaces/impl",
+    "git-widget-placeholder": "dev",
+    "last_opened_file_path": "D:/wrwworkdir/watermark",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -310,11 +297,6 @@
           <url>file://$PROJECT_DIR$/src/main_test_files/basemodel_test_in_global_config/main.py</url>
           <line>160</line>
           <option name="timeStamp" value="182" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/ui/main_window.py</url>
-          <line>129</line>
-          <option name="timeStamp" value="227" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$USER_HOME$/.conda/envs/haiyin_python313/Lib/site-packages/PIL/IcoImagePlugin.py</url>
