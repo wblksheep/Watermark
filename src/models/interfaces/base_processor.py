@@ -103,7 +103,6 @@ class BaseWatermarkProcessor(Generic[T]):
         self._init_logger()
         self.default_params = self._parse_config(config)
 
-    ###change flags
     def get_resource_path(self, filename):
         """获取资源文件的绝对路径"""
         if getattr(sys, 'frozen', False):
@@ -151,15 +150,14 @@ class BaseWatermarkProcessor(Generic[T]):
         """添加批处理各阶段日志"""
         self._logger.info(f"开始批处理任务 | 输入目录: {input_dir} | 输出目录: {output_dir}")
         output_dir.mkdir(parents=True, exist_ok=True)
-        tasks = list(self._generate_tasks(input_dir, output_dir))
-        if not tasks:
-            self._logger.warning("未发现可处理文件")
-            return []
 
         try:
             # 生成任务阶段日志
             task_start = time.perf_counter()
             tasks = list(self._generate_tasks(input_dir, output_dir))
+            if not tasks:
+                self._logger.warning("未发现可处理文件")
+                return []
             gen_time = time.perf_counter() - task_start
             self._logger.info(
                 f"扫描到 {len(tasks)} 个待处理文件 | "

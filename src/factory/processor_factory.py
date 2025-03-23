@@ -19,7 +19,6 @@ class ProcessorFactory:
         """根据类型创建处理器"""
         if wm_type not in self._PROCESSOR_MAP:
             raise ValueError(f"未注册的处理器类型: {wm_type}")
-
         # 获取类型化配置
         processor_config = self.config.watermark_types[wm_type]
 

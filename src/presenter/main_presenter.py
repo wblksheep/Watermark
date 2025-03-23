@@ -75,8 +75,15 @@ class MainPresenter(QObject):
         for signal_name, handler_name in self._SIGNAL_BINDINGS:
             getattr(self.view, signal_name).connect(getattr(self, handler_name))
 
+    ### flags
     def on_menu_click(self, item):
         print(f"点击了菜单项: {item}")
+        input_folder = self.view.get_input_folder_path()
+        output_folder = self.view.get_output_folder_path()
+        result = self.model.batch_generate(input_folder, output_folder)
+
+        # 更新视图
+        self.view.show_info(f"批量生成{len(result)}个降低品质图片")
 
     def handle_folder_selection(self):
         selected_path = self.view.show_folder_dialog("resources/input")

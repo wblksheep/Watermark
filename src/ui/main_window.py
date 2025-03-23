@@ -171,7 +171,6 @@ class MainWindow(IMainWindow):
                 print(f"参数 {param_key} 获取错误: {str(e)}")
         return values
 
-    ### flags
     def get_watermark_params(self, wm_type):
         return {
             param: self.get_param_values(self.params_inputs[wm_type])[param]
@@ -192,7 +191,7 @@ class MainWindow(IMainWindow):
             }
         """)
         # 文件菜单
-        file_action = QAction("文件", self)
+        file_action = QAction("批量生成", self)
         file_action.triggered.connect(lambda: self.menu_clicked.emit("文件"))
         menu_bar.addAction(file_action)
 

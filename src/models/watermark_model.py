@@ -1,4 +1,9 @@
+import os
+import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from typing import Iterable, Tuple
+
 from src.config import ModelParams
 from src.factory.processor_factory import ProcessorFactory
 import logging
@@ -20,7 +25,8 @@ class WatermarkModel:
     def get_handler(self, wm_type):
         return getattr(self, self.config.watermark_types[wm_type]['handler'])
 
-
+    def batch_generate(self, input_dir, output_dir):
+        output_dir.mkdir(parents=True, exist_ok=True)
 
     def process_normal_watermark(self, input_folder, output_folder,  **kwargs):
         processor = self.processor_factory.create_processor("normal")
